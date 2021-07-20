@@ -24,7 +24,10 @@ export default class Pomodoro extends Vue {}
 .pomodoro{
     width: 27.34vw;
     height: 18.2vw;
-    position: relative;
+    position: absolute;
+    top: 44.3vw;
+    left: 6.64vw;
+    overflow:hidden;
 }
 
 .pomodoro .interface{

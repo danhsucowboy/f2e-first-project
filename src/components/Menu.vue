@@ -14,7 +14,7 @@ export default class Menu extends Vue{}
 </script>
 
 <style>
-.cancelBtn{
+.menu-wrapper .cancelBtn{
     position: relative;
     margin-top: 3.75vw;
     width: 3.75vw;
@@ -24,7 +24,7 @@ export default class Menu extends Vue{}
     background: none;
 }
 
-.cancelBtn .close{
+.menu-wrapper .cancelBtn .close{
     text-align: center;
     margin: 0 auto;
     vertical-align: middle;
@@ -36,7 +36,7 @@ export default class Menu extends Vue{}
 }
 
 
-.title{
+.menu-wrapper .title{
     margin-bottom: 3.75vw;
     /* align-self: flex-end; */
     width: 2.42vw;
