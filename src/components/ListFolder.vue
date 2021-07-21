@@ -5,29 +5,9 @@
             <button class="folderBtn" @click="unfolded=!unfolded" :class="{open : unfolded, close : !unfolded}"></button>
         </div>
         <div class="listContents" v-if="unfolded">
-            <div class="listItem">
+            <div class="listItem" v-for="mission in missions" :key="mission">
                 <button class="check"></button>
-                <div class="missionTitle">the First thing to do today</div>
-                <button class="starter"></button>
-            </div>
-            <div class="listItem">
-                <button class="check"></button>
-                <div class="missionTitle">the second thing to do today</div>
-                <button class="starter"></button>
-            </div>
-            <div class="listItem">
-                <button class="check"></button>
-                <div class="missionTitle">the third thing to do today</div>
-                <button class="starter"></button>
-            </div>
-            <div class="listItem">
-                <button class="check"></button>
-                <div class="missionTitle">complete the keynote</div>
-                <button class="starter"></button>
-            </div>
-            <div class="listItem">
-                <button class="check"></button>
-                <div class="missionTitle">prepare presentation</div>
+                <div class="missionTitle">{{mission}}</div>
                 <button class="starter"></button>
             </div>
         </div>
@@ -39,12 +19,19 @@ import {Options, Vue} from 'vue-class-component';
 
 @Options({
     props: {
-        title: String
+        title: String,
+        missions: {
+            type: Array,
+            default(){
+                return ["the First thing to do today", "the second thing to do today", "the third thing to do today", "complete the keynote", "prepare presentation"]
+            }
+        }
     }
 })
 
 export default class ListFolder extends Vue{
     title!: string
+    missions!: Array<string>
     unfolded = false
 
 }
