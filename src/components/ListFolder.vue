@@ -2,9 +2,9 @@
     <div class="folderList">
         <div class="folderBar">
             <p class="folderTitle">{{title}}</p>
-            <button class="folderBtn"></button>
+            <button class="folderBtn" @click="unfolded=!unfolded" :class="{open : unfolded, close : !unfolded}"></button>
         </div>
-        <div class="listContents">
+        <div class="listContents" v-if="unfolded">
             <div class="listItem">
                 <button class="check"></button>
                 <div class="missionTitle">the First thing to do today</div>
@@ -45,6 +45,8 @@ import {Options, Vue} from 'vue-class-component';
 
 export default class ListFolder extends Vue{
     title!: string
+    unfolded = false
+
 }
 </script>
 
@@ -81,9 +83,18 @@ export default class ListFolder extends Vue{
         background-color: #fff;
         border:none;
         padding: 0;
+    }
+
+    .folderBar .close{
+        mask: url('../assets/arrow_drop_down_black_48dp.svg') no-repeat center;
+        mask-size: 100% 100%;
+    }
+
+    .folderBar .open{
         mask: url('../assets/arrow_drop_up_black_48dp.svg') no-repeat center;
         mask-size: 100% 100%;
     }
+
 
 .folderList .listContents{
     width: 100%;

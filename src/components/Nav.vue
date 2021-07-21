@@ -19,8 +19,6 @@
 import router from '../router';
 import {Options, Vue} from 'vue-class-component';
 
-@Options({
-})
 export default class Nav extends Vue{
 
 }
