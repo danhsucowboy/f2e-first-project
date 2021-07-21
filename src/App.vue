@@ -39,6 +39,7 @@ export default class App extends Vue {}
 * {
   margin: 0;
   padding: 0;
+  text-decoration: none;
   // overflow: hidden;
 }
 

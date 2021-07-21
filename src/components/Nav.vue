@@ -1,27 +1,33 @@
 <template>
   <div class="option">
-    <div class="item">
+    <router-link to="/" class="item">
       <div class="nav-icon list"></div>
       <p class="nav-title">to-do list</p>
-    </div>
-    <div class="item">
+    </router-link>
+    <router-link to="/analytics" class="item">
       <div class="nav-icon analytics"></div>
       <p class="nav-title">analytics</p>
-    </div>
-    <div class="item">
-      <div class="nav-icon ringtones"></div>
-      <p class="nav-title">ringtones</p>
-    </div>
+    </router-link>
+    <router-link to="/ringtones" class="item">
+      <div class="nav-icon ringtones" :class="{selectedBgColor: isSelected === 3, unselectBgColor : isSelected !== 3}"></div>
+      <p class="nav-title" :class="{selectedColor: isSelected === 3, unselectColor : isSelected !== 3}">ringtones</p>
+    </router-link>
   </div>
 </template>
 
 <script lang="ts">
+import router from '../router';
 import {Options, Vue} from 'vue-class-component';
 
-export default class Nav extends Vue{}
+@Options({
+})
+export default class Nav extends Vue{
+
+}
 </script>
 
 <style>
+
 .option{
     margin-top:3.5vw;
     height: 16.4vw;
@@ -37,8 +43,16 @@ export default class Nav extends Vue{}
 .option .item .nav-icon{
     width: 3.28125vw;
     height: 3.28125vw;
-    background-color: #FF4384;
     margin-right: 0.625vw;
+    background-color: #FFFFFF33;
+}
+
+.router-link-active .nav-icon{
+    background-color: #FF4384 !important; 
+}
+
+.option .item:hover .nav-icon{
+    background-color: #FF4384;
 }
 
 .option .item .list{
@@ -59,11 +73,19 @@ export default class Nav extends Vue{}
 .option .item .nav-title{
     flex-grow: 1;
     height: 3.28125vw;
-    color: #FF4384;
     font: normal normal bold 2.8125vw/2.8125vw 'Open Sans', sans-serif;
     text-transform: uppercase;
     letter-spacing: 0px;
     line-height: 3.28125vw;
     text-align: left;
+    color: #FFFFFF33
+}
+
+.option .item:hover .nav-title{
+    color: #FF4384;
+}
+
+.router-link-active .nav-title{
+    color: #FF4384 !important;
 }
 </style>
