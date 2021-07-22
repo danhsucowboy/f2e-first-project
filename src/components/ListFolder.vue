@@ -2,7 +2,7 @@
     <div class="folderList">
         <div class="folderBar">
             <p class="folderTitle">{{title}}</p>
-            <button class="folderBtn" @click="unfolded=!unfolded" :class="{open : unfolded, close : !unfolded}"></button>
+            <button class="folderBtn" @click="foldList" :class="{open : unfolded, close : !unfolded}"></button>
         </div>
         <div class="listContents" v-if="unfolded">
             <div class="listItem" v-for="mission in missions" :key="mission">
@@ -15,6 +15,7 @@
 </template>
 
 <script lang="ts">
+import { computed } from '@vue/runtime-core';
 import {Options, Vue} from 'vue-class-component';
 
 @Options({
@@ -25,6 +26,10 @@ import {Options, Vue} from 'vue-class-component';
             default(){
                 return ["the First thing to do today", "the second thing to do today", "the third thing to do today", "complete the keynote", "prepare presentation"]
             }
+        },
+        foldedSetting:{
+            type: Boolean,
+            default(){return false},
         }
     }
 })
@@ -32,8 +37,17 @@ import {Options, Vue} from 'vue-class-component';
 export default class ListFolder extends Vue{
     title!: string
     missions!: Array<string>
-    unfolded = false
+    foldedSetting!: boolean
+    unfolded = this.foldedSetting;
 
+    foldList(){
+        this.unfolded = !this.unfolded;
+    }
+
+    // setup(props){
+    //     const unfolded = computed({
+    //     });
+    // }
 }
 </script>
 

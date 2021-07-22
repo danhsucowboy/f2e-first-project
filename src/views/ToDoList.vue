@@ -3,7 +3,7 @@
         <input class="missionInput" type="text" placeholder="add a new mission…">
         <button class="addMission"></button>
     </div>
-    <ListFolder title="to-do"/>
+    <ListFolder title="to-do" :foldedSetting="true"/>
     <ListFolder title="done"/>
 </template>
 
@@ -18,6 +18,7 @@ import ListFolder from '@/components/ListFolder.vue';
 })
 
 export default class ToDoList extends Vue {
+    listSetting = true
 }
 </script>
 
