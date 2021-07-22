@@ -1,10 +1,10 @@
 <template>
     <div class="newMissionBar">
-        <input class="missionInput" type="text" placeholder="add a new mission…">
-        <button class="addMission"></button>
+        <input class="missionInput" type="text" placeholder="add a new mission…" v-model="newMission" @keyup.enter="addNewMission">
+        <button class="addMission" @click="addNewMission"></button>
     </div>
-    <ListFolder title="to-do" :foldedSetting="true"/>
-    <ListFolder title="done"/>
+    <ListFolder title="to-do" :foldedSetting="true" :missions="inputMissions"/>
+    <ListFolder title="done" :missions="finishedMissions"/>
 </template>
 
 <script lang="ts">
@@ -12,6 +12,11 @@ import {Options, Vue} from 'vue-class-component';
 import ListFolder from '@/components/ListFolder.vue';
 
 @Options({
+    data(){
+        return{
+            newMission:"",
+        }
+    },
     components:{
         ListFolder,
     },
@@ -19,6 +24,13 @@ import ListFolder from '@/components/ListFolder.vue';
 
 export default class ToDoList extends Vue {
     listSetting = true
+    inputMissions = ["the First thing to do today", "the second thing to do today", "complete the keynote", "prepare presentation"]
+    finishedMissions: Array<string> = []
+    newMission!:string
+    addNewMission(){
+        this.inputMissions.push(this.newMission)
+        this.newMission = ""
+    }
 }
 </script>
 
@@ -62,6 +74,7 @@ export default class ToDoList extends Vue {
     padding: 0;
     mask: url('../assets/add_black_48dp.svg') no-repeat center;
     mask-size: 100% 100%;
+    cursor: pointer;
 }
 
 </style>

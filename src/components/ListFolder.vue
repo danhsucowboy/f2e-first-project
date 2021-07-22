@@ -1,14 +1,18 @@
 <template>
     <div class="folderList">
-        <div class="folderBar">
+        <div class="folderBar" @click="foldList">
             <p class="folderTitle">{{title}}</p>
-            <button class="folderBtn" @click="foldList" :class="{open : unfolded, close : !unfolded}"></button>
+            <div class="folderBtn" :class="{open : unfolded, close : !unfolded}"></div>
         </div>
         <div class="listContents" v-if="unfolded">
             <div class="listItem" v-for="mission in missions" :key="mission">
                 <button class="check"></button>
                 <div class="missionTitle">{{mission}}</div>
                 <button class="starter"></button>
+            </div>
+
+            <div class="listItem" v-if="checkListEmpty">
+                <div class="missionTitle">Empty</div>
             </div>
         </div>
     </div>
@@ -24,12 +28,19 @@ import {Options, Vue} from 'vue-class-component';
         missions: {
             type: Array,
             default(){
-                return ["the First thing to do today", "the second thing to do today", "the third thing to do today", "complete the keynote", "prepare presentation"]
+                return []
             }
         },
         foldedSetting:{
             type: Boolean,
             default(){return false},
+        }
+    },
+    computed: {
+        checkListEmpty(){
+            if(this.missions.length >= 1)
+                return false
+            return true
         }
     }
 })
@@ -65,6 +76,7 @@ export default class ListFolder extends Vue{
     flex-direction: row;
     background-color: #FFFFFF33;
     align-items: center;
+    cursor: pointer;
 }
     .folderList .folderBar .folderTitle{
         width: 100%;

@@ -9,14 +9,13 @@
       <p class="nav-title">analytics</p>
     </router-link>
     <router-link to="/ringtones" class="item">
-      <div class="nav-icon ringtones" :class="{selectedBgColor: isSelected === 3, unselectBgColor : isSelected !== 3}"></div>
-      <p class="nav-title" :class="{selectedColor: isSelected === 3, unselectColor : isSelected !== 3}">ringtones</p>
+      <div class="nav-icon ringtones"></div>
+      <p class="nav-title">ringtones</p>
     </router-link>
   </div>
 </template>
 
 <script lang="ts">
-import router from '../router';
 import {Options, Vue} from 'vue-class-component';
 
 export default class Nav extends Vue{
