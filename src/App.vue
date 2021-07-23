@@ -2,11 +2,12 @@
   <div class="wrapper">
     <div class="container">
         <div class="main-controller">
+            <!-- <Nav :missionsNav="missionsApp" :finishedNav="finishedApp"/> -->
             <Nav/>
             <Pomodoro/>
         </div>
         <div class="contents">
-            <router-view/>
+            <router-view @missionChecked="getFinishedId" @missionUnChecked="getUnFinishedId" :missionsToDO="missionsApp" :finishedToDO="finishedApp"/>
         </div>
         <div class="menu-wrapper">
             <Menu/>
@@ -28,9 +29,29 @@ import Menu from '@/components/Menu.vue';
         Pomodoro,
         Menu,
     },
+    data() {
+        return{
+            missionsApp: ["the First thing to do today", "the second thing to do today", "complete the keynote", "prepare presentation"],
+            finishedApp: []
+        }
+    },
 })
 
-export default class App extends Vue {}
+export default class App extends Vue {
+    missionsApp!: Array<string>
+    finishedApp!: Array<string>
+    outputId = 0
+
+    getFinishedId(value: number){
+        this.finishedApp.push(this.missionsApp[value])
+        this.missionsApp.splice(value, 1)
+    }
+
+    getUnFinishedId(value: number){
+        this.missionsApp.push(this.finishedApp[value])
+        this.finishedApp.splice(value, 1)
+    }
+}
 </script>
 
 <style lang="scss">

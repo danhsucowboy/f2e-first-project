@@ -5,25 +5,27 @@
             <div class="folderBtn" :class="{open : unfolded, close : !unfolded}"></div>
         </div>
         <div class="listContents" v-if="unfolded">
-            <div class="listItem" v-for="mission in missions" :key="mission">
-                <button class="check"></button>
-                <div class="missionTitle">{{mission}}</div>
-                <button class="starter"></button>
+            <div class="listItem" v-for="(mission, index) in missions" :key="index">
+                <MissionItem :folderTitle="title" :content="mission" :id="index" @checked="getCheckedId"/>
             </div>
 
             <div class="listItem" v-if="checkListEmpty">
-                <div class="missionTitle">Empty</div>
+                <div class="missionTitle">{{title === 'done' ? 'Empty' : 'Clear'}}</div>
             </div>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { computed } from '@vue/runtime-core';
 import {Options, Vue} from 'vue-class-component';
+import MissionItem from '@/components/MissionItem.vue';
 
 @Options({
+    components: {
+        MissionItem,
+    },
     props: {
+        id: Number,
         title: String,
         missions: {
             type: Array,
@@ -36,29 +38,41 @@ import {Options, Vue} from 'vue-class-component';
             default(){return false},
         }
     },
+    emits: {
+        itemChecked: Number
+    },
     computed: {
         checkListEmpty(){
             if(this.missions.length >= 1)
                 return false
             return true
         }
-    }
+    },
+    // data(){
+    //     return{
+    //         outputId:0
+    //     }
+    // }
 })
 
 export default class ListFolder extends Vue{
+    id!: number
     title!: string
+    itemChecked!: number
+    itemUnChecked!: number
+    // outputId = 0
     missions!: Array<string>
     foldedSetting!: boolean
     unfolded = this.foldedSetting;
 
     foldList(){
-        this.unfolded = !this.unfolded;
+        this.unfolded = !this.unfolded
     }
 
-    // setup(props){
-    //     const unfolded = computed({
-    //     });
-    // }
+    getCheckedId(value: number){
+        // this.outputId = value
+        this.$emit('itemChecked', value)
+    }
 }
 </script>
 
@@ -126,29 +140,4 @@ export default class ListFolder extends Vue{
         border-bottom: 2px solid #FFFFFF33;
         margin-top: 0.7vw;
     }
-        .listContents .listItem .check{
-            width: 1.875vw;
-            height: 1.875vw;
-            background-color: #fff;
-            mask: url('../assets/radio_button_unchecked_black_48dp.svg') no-repeat center;
-            mask-size: 100% 100%;
-        }
-
-        .listContents .listItem .missionTitle{
-            margin-left: 0.3125vw;
-            width: 100%;
-            text-align: left;
-            font: normal normal bold 1.25vw 'Open Sans', sans-serif;
-            letter-spacing: 0px;
-            color: #FFFFFF;
-            text-transform: uppercase;
-        }
-
-        .listContents .listItem .starter{
-            width: 1.875vw;
-            height: 1.875vw;
-            background-color: #fff;
-            mask: url('../assets/play_circle_outline_black_48dp.svg') no-repeat center;
-            mask-size: 100% 100%;
-        }
 </style>

@@ -1,5 +1,11 @@
 <template>
   <div class="option">
+    <!-- <router-link
+        :to="{ name: 'ToDoList',
+               params: {
+                   missionsToDO: missionsNav,
+                   finishedToDO: finishedNav
+               }}" class="item"> -->
     <router-link to="/" class="item">
       <div class="nav-icon list"></div>
       <p class="nav-title">to-do list</p>
@@ -18,8 +24,22 @@
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
 
-export default class Nav extends Vue{
+@Options({
+    // props: {
+    //     missionsNav:{
+    //         type: Array,
+    //         default:[]
+    //     },
+    //     finishedNav:{
+    //         type: Array,
+    //         default:[]
+    //     }
+    // },
+})
 
+export default class Nav extends Vue{
+    // missionsNav!: Array<string>
+    // finishedNav!: Array<string>
 }
 </script>
 

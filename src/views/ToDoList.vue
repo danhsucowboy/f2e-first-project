@@ -3,8 +3,8 @@
         <input class="missionInput" type="text" placeholder="add a new mission…" v-model="newMission" @keyup.enter="addNewMission">
         <button class="addMission" @click="addNewMission"></button>
     </div>
-    <ListFolder title="to-do" :foldedSetting="true" :missions="inputMissions"/>
-    <ListFolder title="done" :missions="finishedMissions"/>
+    <ListFolder title="to-do" :foldedSetting="true" :missions="missionsToDO" @itemChecked="getItemCheckedId"/>
+    <ListFolder title="done" :missions="finishedToDO" @itemChecked="getItemUnCheckedId"/>
 </template>
 
 <script lang="ts">
@@ -20,16 +20,44 @@ import ListFolder from '@/components/ListFolder.vue';
     components:{
         ListFolder,
     },
+    props: {
+        missionsToDO:{
+            type: Array,
+            default:[]
+        },
+        finishedToDO:{
+            type: Array,
+            default:[]
+        }
+    },
+    emits: {
+        missionChecked: Number,
+        missionUnChecked: Number
+    },
 })
 
 export default class ToDoList extends Vue {
+    missionChecked!: number
+    missionUnChecked!: number
+    missionsToDO!: Array<string>
+    finishedToDO!: Array<string>
     listSetting = true
-    inputMissions = ["the First thing to do today", "the second thing to do today", "complete the keynote", "prepare presentation"]
-    finishedMissions: Array<string> = []
+    
+    // inputMissions = ["the First thing to do today", "the second thing to do today", "complete the keynote", "prepare presentation"]
+    // finishedMissions: Array<string> = []
     newMission!:string
     addNewMission(){
-        this.inputMissions.push(this.newMission)
+        this.missionsToDO.push(this.newMission)
         this.newMission = ""
+    }
+
+    getItemCheckedId(value: number){
+        // this.missionChecked = value
+        this.$emit('missionChecked', value)
+    }
+
+    getItemUnCheckedId(value: number){
+        this.$emit('missionUnChecked', value)
     }
 }
 </script>

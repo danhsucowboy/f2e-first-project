@@ -6,6 +6,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     name: 'ToDoList',
     component: ToDoList
+    // props: true
   },
   {
     path: '/analytics',
