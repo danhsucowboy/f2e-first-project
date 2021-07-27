@@ -5,7 +5,8 @@
             <!-- <Nav :missionsNav="missionsApp" :finishedNav="finishedApp"/> -->
             <Nav :titleHide="panelCloseBtn" @panelStatus="openPanel"/>
         </div>
-        <div class="contents" :class="{hideToRight: rightShift}">
+        <!-- <div class="contents" v-if="!rightShift" :class="{hideToRight: rightShift}"> -->
+        <div class="contents" v-if="!rightShift">    
             <router-view @missionChecked="getFinishedId" @missionUnChecked="getUnFinishedId" :missionsToDO="missionsApp" :finishedToDO="finishedApp"/>
         </div>
         <div class="menu-wrapper content-between">
@@ -91,6 +92,7 @@ button{
     transition: all 0.8s;
     transform: translateX(100%);
     opacity: 0;
+    overflow: hidden;
     // grid-column-start: 12 !important;
     // grid-column-end: 13 !important;
 }

@@ -51,6 +51,7 @@ export default class Nav extends Vue{
 
 .alignEnd{
     align-items: flex-end;
+    overflow:hidden;
 }
 
 .option{
