@@ -3,7 +3,7 @@
     <div class="container">
         <div class="main-controller" :class="{shiftToMenu: rightShift}">
             <!-- <Nav :missionsNav="missionsApp" :finishedNav="finishedApp"/> -->
-            <Nav :titleHide="panelCloseBtn"/>
+            <Nav :titleHide="panelCloseBtn" @panelStatus="openPanel"/>
         </div>
         <div class="contents" :class="{hideToRight: rightShift}">
             <router-view @missionChecked="getFinishedId" @missionUnChecked="getUnFinishedId" :missionsToDO="missionsApp" :finishedToDO="finishedApp"/>
@@ -44,17 +44,22 @@ export default class App extends Vue {
     outputId = 0
     rightShift = false
 
-    getFinishedId(value: number){
+    getFinishedId(value: number): void{
         this.finishedApp.push(this.missionsApp[value])
         this.missionsApp.splice(value, 1)
     }
 
-    getUnFinishedId(value: number){
+    getUnFinishedId(value: number): void{
         this.missionsApp.push(this.finishedApp[value])
         this.finishedApp.splice(value, 1)
     }
 
-    closePanel(value: boolean){
+    openPanel(value: boolean): void{
+        this.panelCloseBtn = !value
+        this.rightShift = false;
+    }
+
+    closePanel(value: boolean): void{
         this.panelCloseBtn = value
         this.rightShift = true;
     }

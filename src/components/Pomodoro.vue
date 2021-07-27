@@ -78,6 +78,42 @@ export default class Pomodoro extends Vue {
 </script>
 
 <style>
+.workColor{
+    color: #FF4384;
+}
+
+.breakColor{
+    color: #00A7FF;
+}
+
+.workBgColor{
+    background-color: #FF4384;
+}
+
+.breakBgColor{
+    background-color: #00A7FF;
+}
+
+.processBgColor{
+    background-color: #fff;
+}
+
+.workPanelBgColor{
+    background-color: #FFEDF7;
+}
+
+.breakPanelBgColor{
+    background-color: #E5F3FF;
+}
+
+.workBorder{
+    border: 4px solid #FF4384;
+}
+
+.breakBorder{
+    border: 4px solid #00A7FF;
+}
+
 .isolated{
     position: absolute;
     top: 10.1563vw;

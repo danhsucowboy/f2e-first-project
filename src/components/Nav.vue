@@ -1,20 +1,14 @@
 <template>
   <div class="option" :class="{alignEnd: titleHide}">
-    <!-- <router-link
-        :to="{ name: 'ToDoList',
-               params: {
-                   missionsToDO: missionsNav,
-                   finishedToDO: finishedNav
-               }}" class="item"> -->
-    <router-link to="/" class="item">
+    <router-link to="/" :class="checkLink('ToDoList')" class="item" @click="linkClicked">
       <div class="nav-icon list"></div>
       <p class="nav-title" v-if="!titleHide">to-do list</p>
     </router-link>
-    <router-link to="/analytics" class="item">
+    <router-link to="/analytics" :class="checkLink('Analytics')" class="item" @click="linkClicked">
       <div class="nav-icon analytics"></div>
       <p class="nav-title" v-if="!titleHide">analytics</p>
     </router-link>
-    <router-link to="/ringtones" class="item">
+    <router-link to="/ringtones" :class="checkLink('Ringtones')" class="item" @click="linkClicked">
       <div class="nav-icon ringtones"></div>
       <p class="nav-title" v-if="!titleHide">ringtones</p>
     </router-link>
@@ -28,12 +22,28 @@ import {Options, Vue} from 'vue-class-component';
     props: {
         titleHide: Boolean
     },
+    emits: {
+        panelStatus: Boolean
+    }
 })
 
 export default class Nav extends Vue{
     titleHide!: boolean
+    panelStatus!: boolean
     // missionsNav!: Array<string>
     // finishedNav!: Array<string>
+    checkLink(linkName: string){
+        return{
+            iconDefaultColor: this.$route.name!==linkName && !this.titleHide,  
+            iconPrimaryColor: this.$route.name===linkName && !this.titleHide, 
+            iconSecColor: this.titleHide
+        }
+    }
+
+    linkClicked(){
+        // this.titleHide = false;
+        this.$emit('panelStatus', true);
+    }
 }
 </script>
 
@@ -58,11 +68,19 @@ export default class Nav extends Vue{
 .option .item .nav-icon{
     width: 3.28125vw;
     height: 3.28125vw;
-    background-color: #FFFFFF33;
+    /* background-color: #FFFFFF33; */
 }
 
-.router-link-active .nav-icon{
-    background-color: #FF4384 !important; 
+.iconPrimaryColor .nav-icon{
+    background-color: #FF4384; 
+}
+
+.iconSecColor .nav-icon{
+    background-color: #FFFFFF; 
+}
+
+.iconDefaultColor .nav-icon{
+    background-color: #FFFFFF33; 
 }
 
 .option .item:hover .nav-icon{
@@ -92,7 +110,6 @@ export default class Nav extends Vue{
     letter-spacing: 0px;
     line-height: 3.28125vw;
     text-align: left;
-    color: #FFFFFF33;
     margin-left: 0.625vw;
 }
 
@@ -100,7 +117,11 @@ export default class Nav extends Vue{
     color: #FF4384;
 }
 
-.router-link-active .nav-title{
-    color: #FF4384 !important;
+.iconPrimaryColor .nav-title{
+    color: #FF4384; 
+}
+
+.iconDefaultColor .nav-title{
+    color: #FFFFFF33; 
 }
 </style>
