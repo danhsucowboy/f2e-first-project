@@ -8,7 +8,7 @@
         </div>
     </div>
     <div class="interface">
-      <div v-if="!pomodoroShow" class="count-ui">
+      <div v-if="!pomodoroShow" class="bgPrimaryColor count-ui">
         <div class="process-circle">
           <button class="side play-pause-circle"></button>
           <div class="bg"></div>
@@ -112,6 +112,10 @@ export default class Pomodoro extends Vue {
 
 .breakBorder{
     border: 4px solid #00A7FF;
+}
+
+.bgPrimaryColor{
+    background-color: #003164;
 }
 
 .isolated{
