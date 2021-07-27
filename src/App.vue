@@ -1,18 +1,18 @@
 <template>
   <div class="wrapper">
     <div class="container">
-        <div class="main-controller">
+        <div class="main-controller" :class="{shiftToMenu: rightShift}">
             <!-- <Nav :missionsNav="missionsApp" :finishedNav="finishedApp"/> -->
-            <Nav/>
-            <Pomodoro/>
+            <Nav :titleHide="panelCloseBtn"/>
         </div>
-        <div class="contents">
+        <div class="contents" :class="{hideToRight: rightShift}">
             <router-view @missionChecked="getFinishedId" @missionUnChecked="getUnFinishedId" :missionsToDO="missionsApp" :finishedToDO="finishedApp"/>
         </div>
-        <div class="menu-wrapper">
-            <Menu/>
+        <div class="menu-wrapper content-between">
+            <Menu :btnActive="panelCloseBtn" @closeClick="closePanel"/>
         </div>
     </div>
+    <Pomodoro :pomodoroShow="panelCloseBtn" @missionChecked="getFinishedId" :missionsToDO="missionsApp"/>
   </div>
 </template>
 
@@ -40,7 +40,9 @@ import Menu from '@/components/Menu.vue';
 export default class App extends Vue {
     missionsApp!: Array<string>
     finishedApp!: Array<string>
+    panelCloseBtn = false
     outputId = 0
+    rightShift = false
 
     getFinishedId(value: number){
         this.finishedApp.push(this.missionsApp[value])
@@ -50,6 +52,11 @@ export default class App extends Vue {
     getUnFinishedId(value: number){
         this.missionsApp.push(this.finishedApp[value])
         this.finishedApp.splice(value, 1)
+    }
+
+    closePanel(value: boolean){
+        this.panelCloseBtn = value
+        this.rightShift = true;
     }
 }
 </script>
@@ -74,6 +81,28 @@ button{
   padding: 0;
 }
 
+.hideToRight{
+    // position: absolute;
+    transition: all 0.8s;
+    transform: translateX(100%);
+    opacity: 0;
+    // grid-column-start: 12 !important;
+    // grid-column-end: 13 !important;
+}
+
+.shiftToMenu{
+    grid-column-start: 12 !important;
+    grid-column-end: 13 !important;
+}
+
+.content-end{
+    justify-content: flex-end;
+}
+
+.content-between{
+    justify-content: space-between;
+}
+
 .wrapper{
     width: 100%;
     height: 62.5vw;
@@ -93,11 +122,14 @@ button{
 }
 
 .wrapper .container .main-controller{
+    // position: absolute;
+    // left:0%;
     grid-column-start: 1;
     grid-column-end: 5;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    transition: 1s;
 }
 
 .wrapper .container .contents{
@@ -112,7 +144,6 @@ button{
     grid-column-end: 13;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     align-items: flex-end;
 }
 </style>

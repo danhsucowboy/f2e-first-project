@@ -1,6 +1,6 @@
 <template>
   <div class="menu">
-    <button class="cancelBtn">
+    <button v-if="!btnActive" class="cancelBtn" @click="$emit('closeClick',true)">
       <div class="close"></div>
     </button>
   </div>
@@ -10,7 +10,19 @@
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
 
-export default class Menu extends Vue{}
+@Options({
+  props:{
+    btnActive: Boolean
+  },
+  emits: {
+    closeClick: Boolean
+  }
+})
+
+export default class Menu extends Vue{
+  btnActive!: boolean
+  closeClick!: boolean
+}
 </script>
 
 <style>
@@ -22,6 +34,7 @@ export default class Menu extends Vue{}
     padding:0;
     border: none;
     background: none;
+    cursor: pointer;
 }
 
 .menu-wrapper .cancelBtn .close{

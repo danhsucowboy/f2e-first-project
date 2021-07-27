@@ -1,5 +1,5 @@
 <template>
-  <div class="option">
+  <div class="option" :class="{alignEnd: titleHide}">
     <!-- <router-link
         :to="{ name: 'ToDoList',
                params: {
@@ -8,15 +8,15 @@
                }}" class="item"> -->
     <router-link to="/" class="item">
       <div class="nav-icon list"></div>
-      <p class="nav-title">to-do list</p>
+      <p class="nav-title" v-if="!titleHide">to-do list</p>
     </router-link>
     <router-link to="/analytics" class="item">
       <div class="nav-icon analytics"></div>
-      <p class="nav-title">analytics</p>
+      <p class="nav-title" v-if="!titleHide">analytics</p>
     </router-link>
     <router-link to="/ringtones" class="item">
       <div class="nav-icon ringtones"></div>
-      <p class="nav-title">ringtones</p>
+      <p class="nav-title" v-if="!titleHide">ringtones</p>
     </router-link>
   </div>
 </template>
@@ -25,25 +25,23 @@
 import {Options, Vue} from 'vue-class-component';
 
 @Options({
-    // props: {
-    //     missionsNav:{
-    //         type: Array,
-    //         default:[]
-    //     },
-    //     finishedNav:{
-    //         type: Array,
-    //         default:[]
-    //     }
-    // },
+    props: {
+        titleHide: Boolean
+    },
 })
 
 export default class Nav extends Vue{
+    titleHide!: boolean
     // missionsNav!: Array<string>
     // finishedNav!: Array<string>
 }
 </script>
 
 <style>
+
+.alignEnd{
+    align-items: flex-end;
+}
 
 .option{
     margin-top:3.5vw;
@@ -60,7 +58,6 @@ export default class Nav extends Vue{
 .option .item .nav-icon{
     width: 3.28125vw;
     height: 3.28125vw;
-    margin-right: 0.625vw;
     background-color: #FFFFFF33;
 }
 
@@ -95,7 +92,8 @@ export default class Nav extends Vue{
     letter-spacing: 0px;
     line-height: 3.28125vw;
     text-align: left;
-    color: #FFFFFF33
+    color: #FFFFFF33;
+    margin-left: 0.625vw;
 }
 
 .option .item:hover .nav-title{
