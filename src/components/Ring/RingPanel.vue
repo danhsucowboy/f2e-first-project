@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
-import RingItem from '@/components/RingItem.vue';
+import RingItem from '@/components/Ring/RingItem.vue';
 
 @Options({
     components: {

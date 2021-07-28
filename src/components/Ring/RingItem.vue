@@ -34,7 +34,7 @@ export default class RingItem extends Vue {
     .radioItem .radioUnCheck{
         width: 1.875vw;
         height: 1.875vw;
-        mask: url('../assets/radio_button_unchecked_black_48dp.svg') no-repeat center;
+        mask: url('../../assets/radio_button_unchecked_black_48dp.svg') no-repeat center;
         mask-size: 100% 100%;
         cursor: pointer;
         background-color: #fff;
@@ -43,7 +43,7 @@ export default class RingItem extends Vue {
     .radioItem .radioCheck{
         width: 1.875vw;
         height: 1.875vw;
-        mask: url('../assets/radio_button_checked_black_48dp.svg') no-repeat center;
+        mask: url('../../assets/radio_button_checked_black_48dp.svg') no-repeat center;
         mask-size: 100% 100%;
         cursor: pointer;
         background-color: #FF4384;

@@ -30,14 +30,90 @@
                 <button class="backward"></button>
             </div>
         </div>
-        <div class="analyticChart"></div>
+        <canvas id="theChart" width="100" height="58"></canvas>
     </div>
 </template>
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
+import Chart, {ChartItem} from 'chart.js/auto';
+
+@Options({
+    mounted(){
+        let ctx = (document.getElementById('theChart') as HTMLCanvasElement)?.getContext('2d') // node
+        // let data_count = [16, 12, 16, 8, 12, 4, 20]
+        // let number_cfg = {count: data_count, min:0, max:24} 
+
+        new Chart(ctx as ChartItem, {
+            type: 'bar',
+            data: {
+                labels: ['7/1', '7/2', '7/3', '7/4', '7/5', '7/6', '7/7'],
+                datasets: [{
+                    label: '',
+                    data: [16, 12, 16, 8, 12, 4, 20],
+                    backgroundColor: [
+                        '#ffffff',
+                        '#ffffff',
+                        '#ffffff',
+                        '#ffffff',
+                        '#ffffff',
+                        '#ffffff',
+                        '#FF4384'
+                    ]
+                }]
+            },
+            options: {
+                datasets:{
+                    bar:{
+                        barThickness:20
+                    }
+                },
+                plugins:{
+                    legend:{
+                        display:false
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks:{
+                            color: '#fff',
+                            font: {
+                                family: "'Open Sans', sans-serif",
+                                size: 12,
+                                style: 'normal',
+                                weight: 'normal'
+                            }
+                        },
+                        grid:{
+                            display:false,
+                            borderColor: '#fff',
+                        }
+                    },
+                    y: {
+                        max: 24,
+                        beginAtZero: true,
+                        ticks:{
+                            color: '#fff',
+                            font: {
+                                family: "'Open Sans', sans-serif",
+                                size: 12,
+                                style: 'normal',
+                                weight: 'normal'
+                            }
+                        },
+                        grid:{
+                            display: false,
+                            borderColor: '#fff'
+                        }
+                    }
+                }
+            }
+        })
+    }
+})
 
 export default class Analytics extends Vue {
+
 }
 </script>
 
@@ -165,4 +241,5 @@ export default class Analytics extends Vue {
                 text-transform: uppercase;
                 text-transform: uppercase;
             }
+
 </style>

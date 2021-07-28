@@ -5,7 +5,7 @@
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
-import RingPanel from '@/components/RingPanel.vue';
+import RingPanel from '@/components/Ring/RingPanel.vue';
 @Options({
     components:{
         RingPanel,
