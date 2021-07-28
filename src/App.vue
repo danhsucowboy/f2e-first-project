@@ -7,7 +7,16 @@
         </div>
         <!-- <div class="contents" v-if="!rightShift" :class="{hideToRight: rightShift}"> -->
         <div class="contents" v-if="!rightShift">    
-            <router-view @missionChecked="getFinishedId" @missionUnChecked="getUnFinishedId" :missionsToDO="missionsApp" :finishedToDO="finishedApp"/>
+            <router-view 
+                :missionsToDO="missionsApp" 
+                :finishedToDO="finishedApp"
+                @missionChecked="getFinishedId" 
+                @missionUnChecked="getUnFinishedId" 
+                :workRing="workRing"
+                :breakRing="breakRing"
+                @newWorkRing="changeWorkRing"
+                @newBreakRing="changeBreakRing"
+                />
         </div>
         <div class="menu-wrapper content-between">
             <Menu :btnActive="panelCloseBtn" @closeClick="closePanel"/>
@@ -33,7 +42,9 @@ import Menu from '@/components/Menu.vue';
     data() {
         return{
             missionsApp: ["the First thing to do today", "the second thing to do today", "complete the keynote", "prepare presentation"],
-            finishedApp: []
+            finishedApp: [],
+            workRing: 0,
+            breakRing: 0
         }
     },
 })
@@ -41,6 +52,8 @@ import Menu from '@/components/Menu.vue';
 export default class App extends Vue {
     missionsApp!: Array<string>
     finishedApp!: Array<string>
+    workRing!: number
+    breakRing!: number
     panelCloseBtn = false
     outputId = 0
     rightShift = false
@@ -63,6 +76,14 @@ export default class App extends Vue {
     closePanel(value: boolean): void{
         this.panelCloseBtn = value
         this.rightShift = true;
+    }
+
+    changeWorkRing(value: number): void{
+        this.workRing = value
+    }
+
+    changeBreakRing(value: number): void{
+        this.breakRing = value
     }
 }
 </script>

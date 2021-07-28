@@ -4,7 +4,12 @@
             <p class="barTitle">{{title}}</p>
         </div>
         <div class="radioPanel">
-            <RingItem v-for="(selection, index) in selections" :key="index" :toneName="selection"/>
+            <RingItem 
+                v-for="(selection, index) in selections" :key="index"
+                :toneId="index" 
+                :toneName="selection"
+                :inputStatus="index === selectedRing"
+                @selectedId="getSelectedId"/>
         </div>
     </div>
 </template>
@@ -19,11 +24,17 @@ import RingItem from '@/components/Ring/RingItem.vue';
     },
     props:{
         title: String,
+        selectedRing: Number,
+    },
+    emits: {
+        newSelectedRing: Number
     }
 })
 
 export default class RingPanel extends Vue {
     title!: string
+    selectedRing!: number
+    newSelectedRing!: number
     selections = [
         'none', 'Default', 'alarm',
         'alert', 'beep', 'bell',
@@ -31,6 +42,10 @@ export default class RingPanel extends Vue {
         'drop', 'horn', 'music',
         'ring', 'warning', 'whistle'
     ]
+
+    getSelectedId(value: number): void{
+        this.$emit('newSelectedRing',value)
+    }
 }
 </script>
 

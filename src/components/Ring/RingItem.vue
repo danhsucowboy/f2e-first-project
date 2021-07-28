@@ -1,6 +1,9 @@
 <template>
     <div class="radioItem">
-        <button :class="{radioUnCheck: !radioStatus, radioCheck: radioStatus}" @click="ringChecked()"></button>
+        <button :class="{radioUnCheck: !inputStatus, radioCheck: inputStatus}" 
+            @click="ringChecked()">
+            <!-- <audio src='../assets/audio/"Alarm Clock".mp3'></audio> -->
+        </button>
         <div class="itemName">{{toneName}}</div>
     </div>
 </template>
@@ -10,17 +13,27 @@ import {Options, Vue} from 'vue-class-component';
 
 @Options({
     props:{
-        toneName: String
+        toneId: Number,
+        toneName: String,
+        inputStatus: Boolean,
+    },
+    emits: {
+        selectedId: Number
     }
 })
 
 export default class RingItem extends Vue {
+    toneId!: number
     toneName!: string
-    radioStatus = false
+    inputStatus!: boolean
+    selectedId!: number
+    sound = 'src/assets/audio/alarm-clock.mp3' 
 
-    ringChecked(){
-        this.radioStatus = !this.radioStatus;
+    ringChecked():void{
+        this.$emit('selectedId', this.toneId)
+        new Audio(this.sound).play();
     }
+
 }
 </script>
 
