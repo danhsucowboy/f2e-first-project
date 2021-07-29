@@ -2,17 +2,16 @@
   <div class="wrapper">
     <div class="container">
         <div class="main-controller" :class="{shiftToMenu: rightShift}">
-            <!-- <Nav :missionsNav="missionsApp" :finishedNav="finishedApp"/> -->
             <Nav :titleHide="panelCloseBtn" @panelStatus="openPanel"/>
         </div>
-        <!-- <div class="contents" v-if="!rightShift" :class="{hideToRight: rightShift}"> -->
         <div class="contents" v-if="!rightShift">    
             <router-view 
                 :missionsToDO="missionsApp" 
                 :finishedToDO="finishedApp"
                 @newMission="addNewMission"
                 @missionChecked="getFinishedId" 
-                @missionUnChecked="getUnFinishedId" 
+                @missionUnChecked="getUnFinishedId"
+                @newProcessItem="checkCurrentItem" 
                 :workRing="workRing"
                 :breakRing="breakRing"
                 @newWorkRing="changeWorkRing"
@@ -27,8 +26,10 @@
         :pomodoroShow="panelCloseBtn" 
         @missionChecked="getFinishedId"
         @clickId="getFinishedId"
-        :missionsToDO="missionsApp"
-        @newMission="addNewMission"/>
+        :currentItemId="currentId"
+        :missionsToDo="missionsApp"
+        @newMission="addNewMission"
+        @newProcessItem="checkCurrentItem"/>
   </div>
 </template>
 
@@ -37,7 +38,7 @@ import {Options, Vue} from 'vue-class-component';
 import Nav from '@/components/Nav.vue';
 import Pomodoro from '@/components/Pomodoro.vue';
 import Menu from '@/components/Menu.vue';
-// import ToDoList from '@/views/ToDoList.vue';
+import ToDoList from '@/todoprop';
 
 @Options({
     components: {
@@ -47,7 +48,57 @@ import Menu from '@/components/Menu.vue';
     },
     data() {
         return{
-            missionsApp: ["the First thing to do today", "the second thing to do today", "complete the keynote", "prepare presentation"],
+            missionsList: [
+                {
+                    id: Math.floor(new Date().valueOf() * Math.random()),
+                    contents: "the First thing to do today",
+                    checkStatus: false,
+                    timeUnits: 25,
+                    processTimeUnits: 0
+                },
+                {
+                    id: Math.floor(new Date().valueOf() * Math.random()),
+                    contents: "the second thing to do today",
+                    checkStatus: false,
+                    timeUnits: 25,
+                    processTimeUnits: 0
+                },
+                {
+                    id: Math.floor(new Date().valueOf() * Math.random()),
+                    contents: "the third thing to do today",
+                    checkStatus: false,
+                    timeUnits: 25,
+                    processTimeUnits: 0
+                },
+                {
+                    id: Math.floor(new Date().valueOf() * Math.random()),
+                    contents: "the Forth thing to do today",
+                    checkStatus: false,
+                    timeUnits: 25,
+                    processTimeUnits: 0
+                },
+                {
+                    id: Math.floor(new Date().valueOf() * Math.random()),
+                    contents: "complete the keynote",
+                    checkStatus: false,
+                    timeUnits: 25,
+                    processTimeUnits: 0
+                },
+                {
+                    id: Math.floor(new Date().valueOf() * Math.random()),
+                    contents: "prepare presentation",
+                    checkStatus: false,
+                    timeUnits: 25,
+                    processTimeUnits: 0
+                },
+            ],
+            missionsApp: [
+                "the First thing to do today",
+                "the second thing to do today",
+                "the third thing to do today",
+                "the Forth thing to do today",
+                "complete the keynote",
+                "prepare presentation"],
             finishedApp: [],
             workRing: 0,
             breakRing: 0
@@ -56,16 +107,25 @@ import Menu from '@/components/Menu.vue';
 })
 
 export default class App extends Vue {
+    missionsList!: Array<ToDoList>
     missionsApp!: Array<string>
     finishedApp!: Array<string>
     workRing!: number
     breakRing!: number
     panelCloseBtn = true
-    outputId = 0
+    currentId = 0
     rightShift = true
-    
+
+    getRandomId(): number{
+        return Math.floor(new Date().valueOf() * Math.random())
+    }
+
     addNewMission(value: string){
         this.missionsApp.push(value)
+    }
+
+    checkCurrentItem(value: number){
+        this.currentId = value
     }
 
     getFinishedId(value: number): void{
@@ -107,7 +167,6 @@ export default class App extends Vue {
   text-decoration: none;
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
-  // overflow: hidden;
 }
 
 *::-webkit-scrollbar {
@@ -122,6 +181,46 @@ button{
   background: none;
   border: none;
   padding: 0;
+}
+
+.workColor{
+    color: #FF4384;
+}
+
+.breakColor{
+    color: #00A7FF;
+}
+
+.workBgColor{
+    background-color: #FF4384;
+}
+
+.breakBgColor{
+    background-color: #00A7FF;
+}
+
+.processBgColor{
+    background-color: #fff;
+}
+
+.workPanelBgColor{
+    background-color: #FFEDF7;
+}
+
+.breakPanelBgColor{
+    background-color: #E5F3FF;
+}
+
+.workBorder{
+    border: 4px solid #FF4384;
+}
+
+.breakBorder{
+    border: 4px solid #00A7FF;
+}
+
+.bgPrimaryColor{
+    background-color: #003164;
 }
 
 .hideToRight{

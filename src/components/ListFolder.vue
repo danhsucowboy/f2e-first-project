@@ -4,18 +4,21 @@
             <p class="folderTitle">{{title}}</p>
             <div class="folderBtn" :class="{open : unfolded, close : !unfolded}"></div>
         </div>
-        <div class="listContents" v-if="unfolded">
+        <div class="listContents" :class="checkFolderType" v-if="unfolded">
             <MissionItem v-for="(mission, index) in missions" :key="index" 
                 :itemProps="{
                     panelOpen:panelStatus, 
                     folderTitle:title, 
                     content:mission, 
                     id:index}" 
-                @clickId="getCheckedId"/>
+                @clickId="getCheckedId"
+                @newProcessItem="checkCurrentItem"/>
             <div class="listItem" v-if="checkListEmpty">
                 <div class="missionTitle">{{title === 'done' ? 'Empty' : 'Clear'}}</div>
             </div>
         </div>
+        <p class="workColor mention" v-if="title === 'to-do' && missions.length > 6 && unfolded">Scroll down see MORE</p>
+        <p class="breakColor mention" v-if="title === 'done' && missions.length > 4 && unfolded">Scroll down see your ACHIEVEMENT</p>
     </div>
 </template>
 
@@ -43,20 +46,30 @@ import MissionItem from '@/components/MissionItem.vue';
         }
     },
     emits: {
-        itemChecked: Number
+        itemChecked: Number,
+        newProcessItem: Number
     },
     computed: {
         checkListEmpty(){
             if(this.missions.length >= 1)
                 return false
             return true
+        },
+        checkFolderType(){
+            if(this.title==='to-do'){
+                if(this.missions.length > 6)
+                    return 'moreMission listToDoHeight'
+                return 'listToDoHeight'
+            }
+            else if(this.title==='done'){
+                if(this.missions.length > 4)
+                    return 'moreMission listDoneHeight'
+                 return 'listDoneHeight'
+            }
+            
+            return ''
         }
-    },
-    // data(){
-    //     return{
-    //         outputId:0
-    //     }
-    // }
+    }
 })
 
 export default class ListFolder extends Vue{
@@ -65,7 +78,7 @@ export default class ListFolder extends Vue{
     panelStatus!: boolean
     itemChecked!: number
     itemUnChecked!: number
-    // outputId = 0
+    newProcessItem!: number
     missions!: Array<string>
     foldedSetting!: boolean
     unfolded = this.foldedSetting;
@@ -75,8 +88,11 @@ export default class ListFolder extends Vue{
     }
 
     getCheckedId(value: number){
-        // this.outputId = value
         this.$emit('itemChecked', value)
+    }
+
+    checkCurrentItem(value: number){
+        this.$emit('newProcessItem', value)
     }
 }
 </script>
@@ -133,6 +149,27 @@ export default class ListFolder extends Vue{
     background: none;
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
     margin-top: 0.55vw;
+}
+
+.folderList .listToDoHeight{
+    height: 17.8vw;
+}
+
+.folderList .listDoneHeight{
+    height: 11.09375vw;
+}
+
+.folderList .moreMission{
+    overflow-y: scroll;
+}
+
+.folderList .mention{
+    margin-top: 0.55vw;
+    width: 100%;
+    text-align: left;
+    font: normal normal bold 1.25vw 'Open Sans', sans-serif;
+    letter-spacing: 0px;
 }
 </style>

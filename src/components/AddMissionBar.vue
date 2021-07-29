@@ -24,8 +24,10 @@ export default class AddMissionBar extends Vue {
     newMission!:string
     
     emitNewMission(){
-        this.$emit('add', this.newMission)
-        this.newMission = ""
+        if(this.newMission !== undefined && this.newMission !== ''){
+            this.$emit('add', this.newMission)
+            this.newMission = ""
+        }
     }
 }
 </script>

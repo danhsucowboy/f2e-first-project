@@ -16,34 +16,35 @@
       </div>
       <!-- <div class="timer">25:00</div> -->
       <Orologio v-if="!pomodoroShow"/>
-      <div v-if="!pomodoroShow" class="mission">the First thing to do today</div>
+      <div v-if="!pomodoroShow" class="mission">{{missionsToDo[currentItemId]}}</div>
     </div>
     <div :class="{bgOpen: pomodoroShow}" class="bg">
         <div v-if="pomodoroShow" class="contents">
             <AddMissionBar @add="addNewMission"/>
             <div class="currentItem">
-                <div class="showMission" v-if="missionsToDO.length > 0">
+                <div class="showMission" v-if="missionsToDo.length > 0">
                     <button class="missionBtn"  @click="currentItemChecked"></button>
                     <div class="itemProcess">
-                        <div class="missionTitle">{{missionsToDO[0]}}</div>
+                        <div class="missionTitle">{{missionsToDo[currentItemId]}}</div>
                         <div class="processBoard">
                             <div class="smallCircle"></div>
                         </div>
                     </div>
                 </div>
-                <div class="timer">{{missionsToDO.length > 0 ? '25:00' : 'Clear'}}</div>
+                <div class="timer">{{missionsToDo.length > 0 ? '25:00' : 'Clear'}}</div>
             </div>
             <div class="listContents" :class="{allMission: displayAll}">
-                <MissionItem v-for="(mission, index) in fractionToDo()" :key="index" 
+                <MissionItem v-for="(mission, index) in toDoSource" :key="index" 
                     :itemProps="{
                         panelOpen:false, 
                         folderTitle:'', 
                         content:mission, 
-                        id:index, 
+                        id:index+1, 
                         currentId:0}" 
-                    @clickId="getCheckedId"/>
+                    @clickId="getCheckedId"
+                    @newProcessItem="checkCurrentItem"/>
                 <button class="more" 
-                    v-if="missionsToDO.length > 0 && !displayAll"
+                    v-if="missionsToDo.length > 4 && !displayAll"
                     @click="displayAll = true"
                     >more</button>
             </div>
@@ -53,7 +54,8 @@
 </template>
 
 <script lang="ts">
-import {Options, Vue } from "vue-class-component";
+import {PropType} from 'vue'
+import {Options, Vue} from "vue-class-component";
 import Orologio from '@/components/Orologio.vue';
 import AddMissionBar from '@/components/AddMissionBar.vue';
 import MissionItem from '@/components/MissionItem.vue';
@@ -66,16 +68,27 @@ import MissionItem from '@/components/MissionItem.vue';
     },
     props: {
         pomodoroShow: Boolean,
-        missionsToDO:{
+        currentItemId: Number,
+        missionsToDo: {
             type: Array,
-            default:[]
+            default: []
         },
     },
     emits: {
         newMission: String,
         missionChecked: Number,
-        clickId: Number
-    }   
+        clickId: Number,
+        newProcessItem: Number
+    },
+    computed:{
+        toDoSource(){
+            if(this.displayAll)
+                return this.missionsToDo.filter((m: string, id: number) => id !== this.currentItemId)
+            else
+                return this.missionsToDo.filter((m: string, id: number) => id !== this.currentItemId && id < 4)
+        },
+    }
+    
 })
 
 export default class Pomodoro extends Vue {
@@ -83,8 +96,9 @@ export default class Pomodoro extends Vue {
     pomodoroShow!: boolean
     newMission!: string
     missionChecked!: number
-    missionsToDO!: Array<string>
-    currentItemId = 0
+    missionsToDo!: Array<string>
+    currentItemId!: number
+    newProcessItem!: number
     missionStatus = 'uncheck'
     displayAll = false
 
@@ -97,62 +111,17 @@ export default class Pomodoro extends Vue {
         this.$emit('missionChecked', value)
     }
 
+    checkCurrentItem(value: number){
+        this.$emit('newProcessItem', value)
+    }
+
     currentItemChecked(){
         this.$emit('clickId', this.currentItemId) 
     }
-    
-    fractionToDo(){
-        if(this.displayAll)
-            return this.missionsToDO.filter((i, id) => id <3)
-        else
-            return this.missionsToDO
-    } 
-    
-
 }
 </script>
 
 <style>
-.workColor{
-    color: #FF4384;
-}
-
-.breakColor{
-    color: #00A7FF;
-}
-
-.workBgColor{
-    background-color: #FF4384;
-}
-
-.breakBgColor{
-    background-color: #00A7FF;
-}
-
-.processBgColor{
-    background-color: #fff;
-}
-
-.workPanelBgColor{
-    background-color: #FFEDF7;
-}
-
-.breakPanelBgColor{
-    background-color: #E5F3FF;
-}
-
-.workBorder{
-    border: 4px solid #FF4384;
-}
-
-.breakBorder{
-    border: 4px solid #00A7FF;
-}
-
-.bgPrimaryColor{
-    background-color: #003164;
-}
-
 .isolated{
     position: absolute;
     top: 10.1563vw;
@@ -361,7 +330,7 @@ export default class Pomodoro extends Vue {
             height: 13.75vw;
         } */
 
-    .contents .listContents{
+    .bgOpen .contents .listContents{
         height: 11.09375vw;
         margin-bottom: 3.75vw;
         display: flex;

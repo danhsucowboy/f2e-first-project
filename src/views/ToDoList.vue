@@ -1,6 +1,11 @@
 <template>
     <AddMissionBar @add="addNewMission"/>
-    <ListFolder title="to-do" :foldedSetting="true" :panelStatus="true" :missions="missionsToDO" @itemChecked="getItemCheckedId"/>
+    <ListFolder title="to-do" 
+    :foldedSetting="true" 
+    :panelStatus="true" 
+    :missions="missionsToDO" 
+    @itemChecked="getItemCheckedId"
+    @newProcessItem="checkCurrentItem"/>
     <ListFolder title="done" :missions="finishedToDO" :panelStatus="true" @itemChecked="getItemUnCheckedId"/>
 </template>
 
@@ -27,7 +32,8 @@ import ListFolder from '@/components/ListFolder.vue';
     emits: {
         newMission: String,
         missionChecked: Number,
-        missionUnChecked: Number
+        missionUnChecked: Number,
+        newProcessItem: Number
     },
 })
 
@@ -42,6 +48,10 @@ export default class ToDoList extends Vue {
     
     addNewMission(value: string){
         this.$emit('newMission', value)
+    }
+
+    checkCurrentItem(value: number){
+        this.$emit('newProcessItem', value)
     }
 
     getItemCheckedId(value: number){

@@ -1,8 +1,24 @@
 <template>
-    <div class="listItem" :class="{borderPrimaryColor: itemProps.panelOpen, borderSecColor: !itemProps.panelOpen}" v-if="checkMode">
+    <div class="listItem" 
+        :class="{
+            borderPrimaryColor: itemProps.panelOpen,
+            borderSecColor: !itemProps.panelOpen}" 
+        >
         <button :class="[missionStatus, {bgWhite: itemProps.panelOpen, bgPrimaryColor: !itemProps.panelOpen}]" @click="missionChecked"></button>
-        <div class="missionTitle" :class="[textDecorate, {white: itemProps.panelOpen, primaryColor: !itemProps.panelOpen}]">{{itemProps.content}}</div>
-        <button v-if="itemProps.folderTitle !== 'done'" class="starter" :class="{bgWhite: itemProps.panelOpen, bgPrimaryColor: !itemProps.panelOpen}"></button>
+        <div class="missionTitle" 
+            :class="[textDecorate,
+                 {white: itemProps.panelOpen,
+                  primaryColor: !itemProps.panelOpen}
+                  ]"
+            @click="missionStart">
+            {{itemProps.content}}</div>
+        <button 
+            v-if="itemProps.folderTitle !== 'done'" 
+            class="starter" 
+            :class="{
+                bgWhite: itemProps.panelOpen,
+                bgPrimaryColor: !itemProps.panelOpen}"
+            @click="missionStart"></button>
     </div>
 </template>
 
@@ -20,7 +36,8 @@ import {Options, Vue} from 'vue-class-component';
         }
     },
     emits: {
-        clickId: Number
+        clickId: Number,
+        newProcessItem: Number
     },
     computed: {
         checkMode(){
@@ -38,6 +55,7 @@ import {Options, Vue} from 'vue-class-component';
 
 export default class MissionItem extends Vue{
     clickId!: number
+    newProcessItem!: number
     itemProps!: {
         panelOpen: boolean,
         content: string,
@@ -57,6 +75,10 @@ export default class MissionItem extends Vue{
 
     missionChecked(){
        this.$emit('clickId', this.itemProps.id)  
+    }
+
+    missionStart(){
+       this.$emit('newProcessItem', this.itemProps.id)
     }
 }
 </script>
@@ -123,6 +145,7 @@ export default class MissionItem extends Vue{
         font: normal normal bold 1.25vw 'Open Sans', sans-serif;
         letter-spacing: 0px;
         text-transform: uppercase;
+        cursor: pointer;
     }
 
     .listItem .starter{
@@ -130,5 +153,6 @@ export default class MissionItem extends Vue{
         height: 1.875vw;
         mask: url('../assets/play_circle_outline_black_48dp.svg') no-repeat center;
         mask-size: 100% 100%;
+        cursor: pointer;
     }
 </style>
