@@ -5,7 +5,13 @@
             <div class="folderBtn" :class="{open : unfolded, close : !unfolded}"></div>
         </div>
         <div class="listContents" v-if="unfolded">
-            <MissionItem v-for="(mission, index) in missions" :key="index" :itemProps="{panelOpen:panelStatus, folderTitle:title, content:mission, id:index}" @checked="getCheckedId"/>
+            <MissionItem v-for="(mission, index) in missions" :key="index" 
+                :itemProps="{
+                    panelOpen:panelStatus, 
+                    folderTitle:title, 
+                    content:mission, 
+                    id:index}" 
+                @clickId="getCheckedId"/>
             <div class="listItem" v-if="checkListEmpty">
                 <div class="missionTitle">{{title === 'done' ? 'Empty' : 'Clear'}}</div>
             </div>

@@ -10,6 +10,7 @@
             <router-view 
                 :missionsToDO="missionsApp" 
                 :finishedToDO="finishedApp"
+                @newMission="addNewMission"
                 @missionChecked="getFinishedId" 
                 @missionUnChecked="getUnFinishedId" 
                 :workRing="workRing"
@@ -22,7 +23,12 @@
             <Menu :btnActive="panelCloseBtn" @closeClick="closePanel"/>
         </div>
     </div>
-    <Pomodoro :pomodoroShow="panelCloseBtn" @missionChecked="getFinishedId" :missionsToDO="missionsApp"/>
+    <Pomodoro 
+        :pomodoroShow="panelCloseBtn" 
+        @missionChecked="getFinishedId"
+        @clickId="getFinishedId"
+        :missionsToDO="missionsApp"
+        @newMission="addNewMission"/>
   </div>
 </template>
 
@@ -54,9 +60,13 @@ export default class App extends Vue {
     finishedApp!: Array<string>
     workRing!: number
     breakRing!: number
-    panelCloseBtn = false
+    panelCloseBtn = true
     outputId = 0
-    rightShift = false
+    rightShift = true
+    
+    addNewMission(value: string){
+        this.missionsApp.push(value)
+    }
 
     getFinishedId(value: number): void{
         this.finishedApp.push(this.missionsApp[value])
@@ -95,7 +105,13 @@ export default class App extends Vue {
   margin: 0;
   padding: 0;
   text-decoration: none;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
   // overflow: hidden;
+}
+
+*::-webkit-scrollbar {
+  display: none;
 }
 
 *:focus {

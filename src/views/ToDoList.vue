@@ -25,6 +25,7 @@ import ListFolder from '@/components/ListFolder.vue';
         }
     },
     emits: {
+        newMission: String,
         missionChecked: Number,
         missionUnChecked: Number
     },
@@ -33,17 +34,17 @@ import ListFolder from '@/components/ListFolder.vue';
 export default class ToDoList extends Vue {
     missionChecked!: number
     missionUnChecked!: number
+    newMission!: string
     missionsToDO!: Array<string>
     finishedToDO!: Array<string>
     listSetting = true
     
     
     addNewMission(value: string){
-        this.missionsToDO.push(value)
+        this.$emit('newMission', value)
     }
 
     getItemCheckedId(value: number){
-        // this.missionChecked = value
         this.$emit('missionChecked', value)
     }
 

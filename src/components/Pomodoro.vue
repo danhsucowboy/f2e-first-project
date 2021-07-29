@@ -22,18 +22,30 @@
         <div v-if="pomodoroShow" class="contents">
             <AddMissionBar @add="addNewMission"/>
             <div class="currentItem">
-                <div class="showMission">
-                    <button class="missionBtn"  @click="missionChecked"></button>
+                <div class="showMission" v-if="missionsToDO.length > 0">
+                    <button class="missionBtn"  @click="currentItemChecked"></button>
                     <div class="itemProcess">
                         <div class="missionTitle">{{missionsToDO[0]}}</div>
-                        <div class="smallCircle"></div>
+                        <div class="processBoard">
+                            <div class="smallCircle"></div>
+                        </div>
                     </div>
                 </div>
-                <div class="timer">25:00</div>
+                <div class="timer">{{missionsToDO.length > 0 ? '25:00' : 'Clear'}}</div>
             </div>
-            <div class="listContents">
-                <MissionItem v-for="(mission, index) in missionsToDO" :key="index" :itemProps="{panelOpen:false, folderTitle:'', content:mission, id:index, currentId:0}" @checked="getCheckedId"/>
-                <button class="more">more</button>
+            <div class="listContents" :class="{allMission: displayAll}">
+                <MissionItem v-for="(mission, index) in fractionToDo()" :key="index" 
+                    :itemProps="{
+                        panelOpen:false, 
+                        folderTitle:'', 
+                        content:mission, 
+                        id:index, 
+                        currentId:0}" 
+                    @clickId="getCheckedId"/>
+                <button class="more" 
+                    v-if="missionsToDO.length > 0 && !displayAll"
+                    @click="displayAll = true"
+                    >more</button>
             </div>
         </div>
     </div>
@@ -60,20 +72,43 @@ import MissionItem from '@/components/MissionItem.vue';
         },
     },
     emits: {
-        missionChecked: Number
-    }
+        newMission: String,
+        missionChecked: Number,
+        clickId: Number
+    }   
 })
 
 export default class Pomodoro extends Vue {
+    clickId!: number
     pomodoroShow!: boolean
+    newMission!: string
     missionChecked!: number
     missionsToDO!: Array<string>
     currentItemId = 0
+    missionStatus = 'uncheck'
+    displayAll = false
+
+    addNewMission(value: string){
+        this.$emit('newMission', value)
+    }
 
     getCheckedId(value: number){
         // this.outputId = value
         this.$emit('missionChecked', value)
     }
+
+    currentItemChecked(){
+        this.$emit('clickId', this.currentItemId) 
+    }
+    
+    fractionToDo(){
+        if(this.displayAll)
+            return this.missionsToDO.filter((i, id) => id <3)
+        else
+            return this.missionsToDO
+    } 
+    
+
 }
 </script>
 
@@ -263,12 +298,14 @@ export default class Pomodoro extends Vue {
     }
 
     .contents .currentItem{
-        margin-top: 3vw;    
+        margin-top: 3vw;
+        display: flex;
+        flex-direction: column;    
     }
     
         .contents .currentItem .showMission{
             width: 100%;
-            height: 3.75vw;
+            /* height: 3.75vw; */
             text-align: left;
             display: flex;
             flex-direction: row;
@@ -284,7 +321,8 @@ export default class Pomodoro extends Vue {
 
             .currentItem .showMission .itemProcess{
                 margin-left: 1.25vw;
-
+                display: flex;
+                flex-direction: column;
             }
             
                 .showMission .itemProcess .missionTitle{
@@ -295,12 +333,19 @@ export default class Pomodoro extends Vue {
                     margin-bottom: 0.625vw;
                 }
 
-                .showMission .itemProcess .smallCircle{
-                    width: 0.9375vw;
-                    height: 0.9375vw;
-                    border: 1px solid #FF4384;
-                    border-radius: 50%;
+                .showMission .itemProcess .processBoard{
+                    width: 100%;
+                    display: flex;
+                    flex-direction: row;
+                    flex-wrap: wrap;
                 }
+
+                    .itemProcess .processBoard .smallCircle{
+                        width: 0.9375vw;
+                        height: 0.9375vw;
+                        border: 1px solid #FF4384;
+                        border-radius: 50%;
+                    }
 
         .contents .currentItem .timer{
             width: 100%;
@@ -309,13 +354,23 @@ export default class Pomodoro extends Vue {
             font: normal normal bold 13.75vw/13.75vw 'Open Sans', sans-serif;
             letter-spacing: 0px;
             color: #FF4384;
+            z-index: -1;
         }
 
+        /* .contents .currentItem .timer::selection{
+            height: 13.75vw;
+        } */
+
     .contents .listContents{
+        height: 11.09375vw;
         margin-bottom: 3.75vw;
         display: flex;
         flex-direction: column;
 
+    }
+
+    .contents .allMission{
+        overflow-y: scroll;
     }
 
         .contents .listContents .more{
@@ -328,6 +383,7 @@ export default class Pomodoro extends Vue {
             letter-spacing: 0px;
             color: #FF4384;
             text-transform: uppercase;
+            cursor: pointer;
         }
 
 .pomodoro .bgOpen{
@@ -336,6 +392,6 @@ export default class Pomodoro extends Vue {
     width: 100%;
     height: 100%;
     border-radius: 0%;
-    z-index: 0;
+    z-index: 10;
 }
 </style>

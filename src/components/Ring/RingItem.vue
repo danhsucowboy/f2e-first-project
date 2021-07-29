@@ -27,11 +27,11 @@ export default class RingItem extends Vue {
     toneName!: string
     inputStatus!: boolean
     selectedId!: number
-    sound = 'src/assets/audio/alarm-clock.mp3' 
+    // sound = '/src/assets/audio/alarm-clock.mp3' 
 
     ringChecked():void{
         this.$emit('selectedId', this.toneId)
-        new Audio(this.sound).play();
+        // new Audio(this.sound).play();
     }
 
 }

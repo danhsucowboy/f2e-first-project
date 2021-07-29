@@ -20,8 +20,7 @@ import {Options, Vue} from 'vue-class-component';
         }
     },
     emits: {
-        checked: Number,
-        unchecked: Number
+        clickId: Number
     },
     computed: {
         checkMode(){
@@ -38,8 +37,7 @@ import {Options, Vue} from 'vue-class-component';
 })
 
 export default class MissionItem extends Vue{
-    checked!: number
-    unchecked!: number
+    clickId!: number
     itemProps!: {
         panelOpen: boolean,
         content: string,
@@ -58,14 +56,7 @@ export default class MissionItem extends Vue{
     }
 
     missionChecked(){
-        if(this.missionStatus === 'uncheck'){
-            this.$emit('checked', this.itemProps.id)
-        }
-        else{
-            // this.missionStatus = 'uncheck'
-            // this.textDecorate = ''
-            this.$emit('checked', this.itemProps.id)
-        }   
+       this.$emit('clickId', this.itemProps.id)  
     }
 }
 </script>
