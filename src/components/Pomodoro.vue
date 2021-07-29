@@ -16,7 +16,7 @@
       </div>
       <!-- <div class="timer">25:00</div> -->
       <Orologio v-if="!pomodoroShow"/>
-      <div v-if="!pomodoroShow" class="mission">{{missionsToDo[currentItemId]}}</div>
+      <div v-if="!pomodoroShow" class="mission">{{getMission.contents}}</div>
     </div>
     <div :class="{bgOpen: pomodoroShow}" class="bg">
         <div v-if="pomodoroShow" class="contents">
@@ -25,7 +25,7 @@
                 <div class="showMission" v-if="missionsToDo.length > 0">
                     <button class="missionBtn"  @click="currentItemChecked"></button>
                     <div class="itemProcess">
-                        <div class="missionTitle">{{missionsToDo[currentItemId]}}</div>
+                        <div class="missionTitle">{{getMission.contents}}</div>
                         <div class="processBoard">
                             <div class="smallCircle"></div>
                         </div>
@@ -38,10 +38,8 @@
                     :itemProps="{
                         panelOpen:false, 
                         folderTitle:'', 
-                        content:mission, 
-                        id:index+1, 
-                        currentId:0}" 
-                    @clickId="getCheckedId"
+                        item:mission, 
+                        currentId:getCurrentItemId}" 
                     @newProcessItem="checkCurrentItem"/>
                 <button class="more" 
                     v-if="missionsToDo.length > 4 && !displayAll"
@@ -54,11 +52,11 @@
 </template>
 
 <script lang="ts">
-import {PropType} from 'vue'
 import {Options, Vue} from "vue-class-component";
 import Orologio from '@/components/Orologio.vue';
 import AddMissionBar from '@/components/AddMissionBar.vue';
 import MissionItem from '@/components/MissionItem.vue';
+import ToDoItem from "@/todoprop";
 
 @Options({
     components: {
@@ -83,10 +81,18 @@ import MissionItem from '@/components/MissionItem.vue';
     computed:{
         toDoSource(){
             if(this.displayAll)
-                return this.missionsToDo.filter((m: string, id: number) => id !== this.currentItemId)
+                return this.missionsToDo.filter((m: ToDoItem) => !m.checkStatus && m.id !== this.getCurrentItemId)
             else
-                return this.missionsToDo.filter((m: string, id: number) => id !== this.currentItemId && id < 4)
+                return this.missionsToDo.filter((m: ToDoItem, index: number) => !m.checkStatus && m.id !== this.getCurrentItemId && index < 4)
         },
+        getCurrentItemId(){
+            if(this.currentItemId === 0)
+                return this.missionsToDo[0].id
+            return this.currentItemId
+        },
+        getMission(){
+            return this.missionsToDo.filter((m: ToDoItem) => m.id === this.getCurrentItemId)[0]
+        }
     }
     
 })
@@ -94,7 +100,7 @@ import MissionItem from '@/components/MissionItem.vue';
 export default class Pomodoro extends Vue {
     clickId!: number
     pomodoroShow!: boolean
-    newMission!: string
+    newMission!: ToDoItem
     missionChecked!: number
     missionsToDo!: Array<string>
     currentItemId!: number
@@ -103,7 +109,14 @@ export default class Pomodoro extends Vue {
     displayAll = false
 
     addNewMission(value: string){
-        this.$emit('newMission', value)
+        let inputMission:ToDoItem = {
+            id: Math.floor(new Date().valueOf() * Math.random()),
+            contents: value,
+            checkStatus: false,
+            timeUnits: 25,
+            processTimeUnits: 0
+        }
+        this.$emit('newMission', inputMission)
     }
 
     getCheckedId(value: number){

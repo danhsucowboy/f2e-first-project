@@ -4,15 +4,27 @@
     :foldedSetting="true" 
     :panelStatus="true" 
     :missions="missionsToDO" 
-    @itemChecked="getItemCheckedId"
     @newProcessItem="checkCurrentItem"/>
-    <ListFolder title="done" :missions="finishedToDO" :panelStatus="true" @itemChecked="getItemUnCheckedId"/>
+    <!-- <ListFolder title="to-do" 
+    :foldedSetting="true" 
+    :panelStatus="true" 
+    :missions="missionsToDO" 
+    @itemChecked="getItemCheckedId"
+    @newProcessItem="checkCurrentItem"/> -->
+    <ListFolder title="done" 
+    :missions="missionsToDO" 
+    :panelStatus="true"/>
+    <!-- <ListFolder title="done" 
+    :missions="finishedToDO" 
+    :panelStatus="true" 
+    @itemChecked="getItemUnCheckedId"/> -->
 </template>
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
 import AddMissionBar from '@/components/AddMissionBar.vue';
 import ListFolder from '@/components/ListFolder.vue';
+import ToDoItem from '@/todoprop';
 
 @Options({
     components:{
@@ -40,14 +52,21 @@ import ListFolder from '@/components/ListFolder.vue';
 export default class ToDoList extends Vue {
     missionChecked!: number
     missionUnChecked!: number
-    newMission!: string
-    missionsToDO!: Array<string>
+    newMission!: ToDoItem
+    missionsToDO!: Array<ToDoItem>
     finishedToDO!: Array<string>
     listSetting = true
     
     
     addNewMission(value: string){
-        this.$emit('newMission', value)
+        let inputMission:ToDoItem = {
+            id: Math.floor(new Date().valueOf() * Math.random()),
+            contents: value,
+            checkStatus: false,
+            timeUnits: 25,
+            processTimeUnits: 0
+        }
+        this.$emit('newMission', inputMission)
     }
 
     checkCurrentItem(value: number){

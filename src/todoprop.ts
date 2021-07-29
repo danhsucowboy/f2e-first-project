@@ -1,4 +1,4 @@
-export default interface ToDoList{
+export default interface ToDoItem{
     id: number,
     contents: string,
     checkStatus: boolean,

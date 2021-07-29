@@ -6,7 +6,16 @@
         </div>
         <div class="contents" v-if="!rightShift">    
             <router-view 
-                :missionsToDO="missionsApp" 
+                :missionsToDO="missionsList"
+                @newMission="addNewMission"
+                @newProcessItem="checkCurrentItem" 
+                :workRing="workRing"
+                :breakRing="breakRing"
+                @newWorkRing="changeWorkRing"
+                @newBreakRing="changeBreakRing"
+                />
+            <!-- <router-view 
+                :missionsToDO="missionsList" 
                 :finishedToDO="finishedApp"
                 @newMission="addNewMission"
                 @missionChecked="getFinishedId" 
@@ -16,7 +25,7 @@
                 :breakRing="breakRing"
                 @newWorkRing="changeWorkRing"
                 @newBreakRing="changeBreakRing"
-                />
+                /> -->
         </div>
         <div class="menu-wrapper content-between">
             <Menu :btnActive="panelCloseBtn" @closeClick="closePanel"/>
@@ -24,12 +33,18 @@
     </div>
     <Pomodoro 
         :pomodoroShow="panelCloseBtn" 
-        @missionChecked="getFinishedId"
+        @clickId="getFinishedId"
+        :currentItemId="currentId"
+        :missionsToDo="missionsList"
+        @newMission="addNewMission"
+        @newProcessItem="checkCurrentItem"/>
+    <!-- <Pomodoro 
+        :pomodoroShow="panelCloseBtn" 
         @clickId="getFinishedId"
         :currentItemId="currentId"
         :missionsToDo="missionsApp"
         @newMission="addNewMission"
-        @newProcessItem="checkCurrentItem"/>
+        @newProcessItem="checkCurrentItem"/> -->
   </div>
 </template>
 
@@ -38,7 +53,7 @@ import {Options, Vue} from 'vue-class-component';
 import Nav from '@/components/Nav.vue';
 import Pomodoro from '@/components/Pomodoro.vue';
 import Menu from '@/components/Menu.vue';
-import ToDoList from '@/todoprop';
+import ToDoItem from '@/todoprop';
 
 @Options({
     components: {
@@ -107,7 +122,7 @@ import ToDoList from '@/todoprop';
 })
 
 export default class App extends Vue {
-    missionsList!: Array<ToDoList>
+    missionsList!: Array<ToDoItem>
     missionsApp!: Array<string>
     finishedApp!: Array<string>
     workRing!: number
@@ -120,8 +135,8 @@ export default class App extends Vue {
         return Math.floor(new Date().valueOf() * Math.random())
     }
 
-    addNewMission(value: string){
-        this.missionsApp.push(value)
+    addNewMission(value: ToDoItem){
+        this.missionsList.push(value)
     }
 
     checkCurrentItem(value: number){

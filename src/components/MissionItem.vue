@@ -4,14 +4,17 @@
             borderPrimaryColor: itemProps.panelOpen,
             borderSecColor: !itemProps.panelOpen}" 
         >
-        <button :class="[missionStatus, {bgWhite: itemProps.panelOpen, bgPrimaryColor: !itemProps.panelOpen}]" @click="missionChecked"></button>
+        <button :class="[missionStatus, 
+        {bgWhite: itemProps.panelOpen, 
+         bgPrimaryColor: !itemProps.panelOpen}]" 
+        @click="missionChecked"></button>
         <div class="missionTitle" 
             :class="[textDecorate,
                  {white: itemProps.panelOpen,
                   primaryColor: !itemProps.panelOpen}
                   ]"
             @click="missionStart">
-            {{itemProps.content}}</div>
+            {{itemProps.item.contents}}</div>
         <button 
             v-if="itemProps.folderTitle !== 'done'" 
             class="starter" 
@@ -24,14 +27,13 @@
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
-
+import ToDoItem from '@/todoprop';
 @Options({
     props: {
         itemProps: {
             panelOpen: Boolean,
-            content: String,
             folderTitle: String,
-            id: Number,
+            item: Object as () => ToDoItem,
             currentId: Number
         }
     },
@@ -44,12 +46,12 @@ import {Options, Vue} from 'vue-class-component';
             if(this.itemProps.panelOpen)
                 return true
             else{
-                if(this.itemProps.id !== this.itemProps.currentId)
+                if(this.itemProps.item.id !== this.itemProps.currentId)
                     return true
                 else
                     return false
+            }
         }
-    }
     }
 })
 
@@ -58,9 +60,8 @@ export default class MissionItem extends Vue{
     newProcessItem!: number
     itemProps!: {
         panelOpen: boolean,
-        content: string,
         folderTitle: string,
-        id: number,
+        item:ToDoItem,
         currentId: number
     }
     missionStatus = 'uncheck'
@@ -74,11 +75,11 @@ export default class MissionItem extends Vue{
     }
 
     missionChecked(){
-       this.$emit('clickId', this.itemProps.id)  
+        this.itemProps.item.checkStatus = !this.itemProps.item.checkStatus
     }
 
     missionStart(){
-       this.$emit('newProcessItem', this.itemProps.id)
+       this.$emit('newProcessItem', this.itemProps.item.id)
     }
 }
 </script>

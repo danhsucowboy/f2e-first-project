@@ -5,26 +5,32 @@
             <div class="folderBtn" :class="{open : unfolded, close : !unfolded}"></div>
         </div>
         <div class="listContents" :class="checkFolderType" v-if="unfolded">
-            <MissionItem v-for="(mission, index) in missions" :key="index" 
+            <MissionItem v-for="mission in checkItemStatus" :key="mission" 
                 :itemProps="{
                     panelOpen:panelStatus, 
-                    folderTitle:title, 
-                    content:mission, 
-                    id:index}" 
-                @clickId="getCheckedId"
+                    folderTitle:title,
+                    item:mission}"
                 @newProcessItem="checkCurrentItem"/>
+            <!-- <MissionItem v-for="mission in missions" :key="mission" 
+                :itemProps="{
+                    panelOpen:panelStatus, 
+                    folderTitle:title,
+                    content:mission}"
+                @clickId="getCheckedId"
+                @newProcessItem="checkCurrentItem"/> -->
             <div class="listItem" v-if="checkListEmpty">
                 <div class="missionTitle">{{title === 'done' ? 'Empty' : 'Clear'}}</div>
             </div>
         </div>
-        <p class="workColor mention" v-if="title === 'to-do' && missions.length > 6 && unfolded">Scroll down see MORE</p>
-        <p class="breakColor mention" v-if="title === 'done' && missions.length > 4 && unfolded">Scroll down see your ACHIEVEMENT</p>
+        <p class="workColor mention" v-if="title === 'to-do' && checkItemStatus.length > 6 && unfolded">Scroll down see MORE</p>
+        <p class="breakColor mention" v-if="title === 'done' && checkItemStatus.length > 4 && unfolded">Scroll down see your ACHIEVEMENT</p>
     </div>
 </template>
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
 import MissionItem from '@/components/MissionItem.vue';
+import ToDoItem from '@/todoprop';
 
 @Options({
     components: {
@@ -68,7 +74,15 @@ import MissionItem from '@/components/MissionItem.vue';
             }
             
             return ''
+        },
+        checkItemStatus(){
+            if(this.title==='done')
+                return this.missions.filter((m: ToDoItem) => m.checkStatus)
+            else
+                return this.missions.filter((m: ToDoItem) => !m.checkStatus)
+
         }
+        
     }
 })
 
@@ -79,7 +93,7 @@ export default class ListFolder extends Vue{
     itemChecked!: number
     itemUnChecked!: number
     newProcessItem!: number
-    missions!: Array<string>
+    missions!: Array<ToDoItem>
     foldedSetting!: boolean
     unfolded = this.foldedSetting;
 
