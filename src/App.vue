@@ -8,24 +8,14 @@
             <router-view 
                 :missionsToDO="missionsList"
                 @newMission="addNewMission"
-                @newProcessItem="checkCurrentItem" 
+                @newProcessItem="getCurrentId"
+                @missionChecked="getFinishedId"
+                @missionUnChecked="getUnCheckMission" 
                 :workRing="workRing"
                 :breakRing="breakRing"
                 @newWorkRing="changeWorkRing"
                 @newBreakRing="changeBreakRing"
                 />
-            <!-- <router-view 
-                :missionsToDO="missionsList" 
-                :finishedToDO="finishedApp"
-                @newMission="addNewMission"
-                @missionChecked="getFinishedId" 
-                @missionUnChecked="getUnFinishedId"
-                @newProcessItem="checkCurrentItem" 
-                :workRing="workRing"
-                :breakRing="breakRing"
-                @newWorkRing="changeWorkRing"
-                @newBreakRing="changeBreakRing"
-                /> -->
         </div>
         <div class="menu-wrapper content-between">
             <Menu :btnActive="panelCloseBtn" @closeClick="closePanel"/>
@@ -34,17 +24,10 @@
     <Pomodoro 
         :pomodoroShow="panelCloseBtn" 
         @clickId="getFinishedId"
-        :currentItemId="currentId"
-        :missionsToDo="missionsList"
+        :currentItemId="getCurrentId"
+        :missionsToDo="toDoList"
         @newMission="addNewMission"
-        @newProcessItem="checkCurrentItem"/>
-    <!-- <Pomodoro 
-        :pomodoroShow="panelCloseBtn" 
-        @clickId="getFinishedId"
-        :currentItemId="currentId"
-        :missionsToDo="missionsApp"
-        @newMission="addNewMission"
-        @newProcessItem="checkCurrentItem"/> -->
+        @newProcessItem="getCurrentId"/>
   </div>
 </template>
 
@@ -68,68 +51,103 @@ import ToDoItem from '@/todoprop';
                     id: Math.floor(new Date().valueOf() * Math.random()),
                     contents: "the First thing to do today",
                     checkStatus: false,
-                    timeUnits: 25,
+                    timeUnit: 25,
                     processTimeUnits: 0
                 },
                 {
                     id: Math.floor(new Date().valueOf() * Math.random()),
                     contents: "the second thing to do today",
                     checkStatus: false,
-                    timeUnits: 25,
+                    timeUnit: 25,
                     processTimeUnits: 0
                 },
                 {
                     id: Math.floor(new Date().valueOf() * Math.random()),
                     contents: "the third thing to do today",
                     checkStatus: false,
-                    timeUnits: 25,
+                    timeUnit: 25,
                     processTimeUnits: 0
                 },
                 {
                     id: Math.floor(new Date().valueOf() * Math.random()),
                     contents: "the Forth thing to do today",
                     checkStatus: false,
-                    timeUnits: 25,
+                    timeUnit: 25,
                     processTimeUnits: 0
                 },
                 {
                     id: Math.floor(new Date().valueOf() * Math.random()),
                     contents: "complete the keynote",
                     checkStatus: false,
-                    timeUnits: 25,
+                    timeUnit: 25,
                     processTimeUnits: 0
                 },
                 {
                     id: Math.floor(new Date().valueOf() * Math.random()),
                     contents: "prepare presentation",
                     checkStatus: false,
-                    timeUnits: 25,
+                    timeUnit: 25,
                     processTimeUnits: 0
                 },
+                {
+                    id: Math.floor(new Date().valueOf() * Math.random()),
+                    contents: "mockup of the new case",
+                    checkStatus: true,
+                    timeUnit: 25,
+                    processTimeUnits: 4
+                },
+                {
+                    id: Math.floor(new Date().valueOf() * Math.random()),
+                    contents: "product prototype",
+                    checkStatus: true,
+                    timeUnit: 25,
+                    processTimeUnits: 2
+                },
+                {
+                    id: Math.floor(new Date().valueOf() * Math.random()),
+                    contents: "draw a wireframe",
+                    checkStatus: true,
+                    timeUnit: 25,
+                    processTimeUnits: 7
+                },
+                {
+                    id: Math.floor(new Date().valueOf() * Math.random()),
+                    contents: "website detail refine",
+                    checkStatus: true,
+                    timeUnit: 25,
+                    processTimeUnits: 5
+                }
             ],
-            missionsApp: [
-                "the First thing to do today",
-                "the second thing to do today",
-                "the third thing to do today",
-                "the Forth thing to do today",
-                "complete the keynote",
-                "prepare presentation"],
-            finishedApp: [],
             workRing: 0,
-            breakRing: 0
+            breakRing: 0,
+            // currentId: 0
         }
     },
+    computed:{
+        toDoList(){
+            return this.missionsList.filter((m: ToDoItem) => !m.checkStatus)
+        }
+    }
 })
 
 export default class App extends Vue {
     missionsList!: Array<ToDoItem>
-    missionsApp!: Array<string>
-    finishedApp!: Array<string>
+    toDoList!: Array<ToDoItem>
     workRing!: number
     breakRing!: number
     panelCloseBtn = true
     currentId = 0
     rightShift = true
+
+    private get getCurrentId(): number{
+        if(this.currentId === 0)
+            return this.toDoList[0].id
+        return this.currentId
+    }
+
+    private set getCurrentId(newValue){
+        this.currentId = newValue
+    }
 
     getRandomId(): number{
         return Math.floor(new Date().valueOf() * Math.random())
@@ -143,14 +161,21 @@ export default class App extends Vue {
         this.currentId = value
     }
 
-    getFinishedId(value: number): void{
-        this.finishedApp.push(this.missionsApp[value])
-        this.missionsApp.splice(value, 1)
+    getUnCheckMission(value:number): void{
+        if(this.currentId === -1)
+            this.currentId = value
     }
 
-    getUnFinishedId(value: number): void{
-        this.missionsApp.push(this.finishedApp[value])
-        this.finishedApp.splice(value, 1)
+    getFinishedId(value: number): void{
+        this.toDoList.forEach((m:ToDoItem)=>{
+            if(m.id === value)
+                m.checkStatus = !m.checkStatus
+        })
+        
+        if(this.toDoList.length > 0)
+            this.currentId = this.toDoList[0].id
+        else
+            this.currentId = -1
     }
 
     openPanel(value: boolean): void{

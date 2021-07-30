@@ -2,6 +2,6 @@ export default interface ToDoItem{
     id: number,
     contents: string,
     checkStatus: boolean,
-    timeUnits: number,
+    timeUnit: number,
     processTimeUnits: number
 }

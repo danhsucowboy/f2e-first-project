@@ -4,20 +4,12 @@
     :foldedSetting="true" 
     :panelStatus="true" 
     :missions="missionsToDO" 
+    @itemStatus="getItemCheckedId"
     @newProcessItem="checkCurrentItem"/>
-    <!-- <ListFolder title="to-do" 
-    :foldedSetting="true" 
-    :panelStatus="true" 
-    :missions="missionsToDO" 
-    @itemChecked="getItemCheckedId"
-    @newProcessItem="checkCurrentItem"/> -->
     <ListFolder title="done" 
     :missions="missionsToDO" 
-    :panelStatus="true"/>
-    <!-- <ListFolder title="done" 
-    :missions="finishedToDO" 
-    :panelStatus="true" 
-    @itemChecked="getItemUnCheckedId"/> -->
+    :panelStatus="true"
+    @itemStatus="getItemUnCheckedId"/>
 </template>
 
 <script lang="ts">
@@ -63,7 +55,7 @@ export default class ToDoList extends Vue {
             id: Math.floor(new Date().valueOf() * Math.random()),
             contents: value,
             checkStatus: false,
-            timeUnits: 25,
+            timeUnit: 25,
             processTimeUnits: 0
         }
         this.$emit('newMission', inputMission)

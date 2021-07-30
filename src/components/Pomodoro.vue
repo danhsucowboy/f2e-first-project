@@ -16,7 +16,7 @@
       </div>
       <!-- <div class="timer">25:00</div> -->
       <Orologio v-if="!pomodoroShow"/>
-      <div v-if="!pomodoroShow" class="mission">{{getMission.contents}}</div>
+      <div v-if="!pomodoroShow" class="mission">{{missionsToDo.length > 0 ? getMission.contents : 'Clear'}}</div>
     </div>
     <div :class="{bgOpen: pomodoroShow}" class="bg">
         <div v-if="pomodoroShow" class="contents">
@@ -31,7 +31,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="timer">{{missionsToDo.length > 0 ? '25:00' : 'Clear'}}</div>
+                <div class="timer">{{currentItemId > 0 ? '25:00' : 'Clear'}}</div>
             </div>
             <div class="listContents" :class="{allMission: displayAll}">
                 <MissionItem v-for="(mission, index) in toDoSource" :key="index" 
@@ -39,7 +39,7 @@
                         panelOpen:false, 
                         folderTitle:'', 
                         item:mission, 
-                        currentId:getCurrentItemId}" 
+                        currentId:currentItemId}" 
                     @newProcessItem="checkCurrentItem"/>
                 <button class="more" 
                     v-if="missionsToDo.length > 4 && !displayAll"
@@ -81,17 +81,12 @@ import ToDoItem from "@/todoprop";
     computed:{
         toDoSource(){
             if(this.displayAll)
-                return this.missionsToDo.filter((m: ToDoItem) => !m.checkStatus && m.id !== this.getCurrentItemId)
+                return this.missionsToDo.filter((m: ToDoItem) => m.id !== this.currentItemId)
             else
-                return this.missionsToDo.filter((m: ToDoItem, index: number) => !m.checkStatus && m.id !== this.getCurrentItemId && index < 4)
-        },
-        getCurrentItemId(){
-            if(this.currentItemId === 0)
-                return this.missionsToDo[0].id
-            return this.currentItemId
+                return this.missionsToDo.filter((m: ToDoItem, index: number) => m.id !== this.currentItemId && index < 4)
         },
         getMission(){
-            return this.missionsToDo.filter((m: ToDoItem) => m.id === this.getCurrentItemId)[0]
+            return this.missionsToDo.filter((m: ToDoItem) => !m.checkStatus && m.id === this.currentItemId)[0]
         }
     }
     
@@ -102,9 +97,10 @@ export default class Pomodoro extends Vue {
     pomodoroShow!: boolean
     newMission!: ToDoItem
     missionChecked!: number
-    missionsToDo!: Array<string>
+    missionsToDo!: Array<ToDoItem>
     currentItemId!: number
     newProcessItem!: number
+    getMission!: ToDoItem
     missionStatus = 'uncheck'
     displayAll = false
 
@@ -113,7 +109,7 @@ export default class Pomodoro extends Vue {
             id: Math.floor(new Date().valueOf() * Math.random()),
             contents: value,
             checkStatus: false,
-            timeUnits: 25,
+            timeUnit: 25,
             processTimeUnits: 0
         }
         this.$emit('newMission', inputMission)
@@ -129,8 +125,9 @@ export default class Pomodoro extends Vue {
     }
 
     currentItemChecked(){
-        this.$emit('clickId', this.currentItemId) 
+        this.$emit('clickId', this.currentItemId)
     }
+
 }
 </script>
 

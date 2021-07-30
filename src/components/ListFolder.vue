@@ -10,14 +10,8 @@
                     panelOpen:panelStatus, 
                     folderTitle:title,
                     item:mission}"
+                @clickId="getIdStatusChange"
                 @newProcessItem="checkCurrentItem"/>
-            <!-- <MissionItem v-for="mission in missions" :key="mission" 
-                :itemProps="{
-                    panelOpen:panelStatus, 
-                    folderTitle:title,
-                    content:mission}"
-                @clickId="getCheckedId"
-                @newProcessItem="checkCurrentItem"/> -->
             <div class="listItem" v-if="checkListEmpty">
                 <div class="missionTitle">{{title === 'done' ? 'Empty' : 'Clear'}}</div>
             </div>
@@ -52,7 +46,7 @@ import ToDoItem from '@/todoprop';
         }
     },
     emits: {
-        itemChecked: Number,
+        itemStatus: Number,
         newProcessItem: Number
     },
     computed: {
@@ -90,8 +84,7 @@ export default class ListFolder extends Vue{
     id!: number
     title!: string
     panelStatus!: boolean
-    itemChecked!: number
-    itemUnChecked!: number
+    itemStatus!: number
     newProcessItem!: number
     missions!: Array<ToDoItem>
     foldedSetting!: boolean
@@ -101,8 +94,8 @@ export default class ListFolder extends Vue{
         this.unfolded = !this.unfolded
     }
 
-    getCheckedId(value: number){
-        this.$emit('itemChecked', value)
+    getIdStatusChange(value: number){
+        this.$emit('itemStatus', value)
     }
 
     checkCurrentItem(value: number){
@@ -168,11 +161,11 @@ export default class ListFolder extends Vue{
 }
 
 .folderList .listToDoHeight{
-    height: 17.8vw;
+    max-height: 17.8vw;
 }
 
 .folderList .listDoneHeight{
-    height: 11.09375vw;
+    max-height: 11.09375vw;
 }
 
 .folderList .moreMission{

@@ -12,8 +12,7 @@
             :class="[textDecorate,
                  {white: itemProps.panelOpen,
                   primaryColor: !itemProps.panelOpen}
-                  ]"
-            @click="missionStart">
+                  ]">
             {{itemProps.item.contents}}</div>
         <button 
             v-if="itemProps.folderTitle !== 'done'" 
@@ -76,6 +75,8 @@ export default class MissionItem extends Vue{
 
     missionChecked(){
         this.itemProps.item.checkStatus = !this.itemProps.item.checkStatus
+        // if(this.itemProps.folderTitle === 'done')
+        this.$emit('clickId', this.itemProps.item.id)
     }
 
     missionStart(){
