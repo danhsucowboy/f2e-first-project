@@ -51,18 +51,18 @@ import ToDoItem from '@/todoprop';
     },
     computed: {
         checkListEmpty(){
-            if(this.missions.length >= 1)
+            if(this.checkItemStatus.length >= 1)
                 return false
             return true
         },
         checkFolderType(){
             if(this.title==='to-do'){
-                if(this.missions.length > 6)
+                if(this.checkItemStatus.length > 6)
                     return 'moreMission listToDoHeight'
                 return 'listToDoHeight'
             }
             else if(this.title==='done'){
-                if(this.missions.length > 4)
+                if(this.checkItemStatus.length > 4)
                     return 'moreMission listDoneHeight'
                  return 'listDoneHeight'
             }

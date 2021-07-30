@@ -21,6 +21,13 @@
                 bgWhite: itemProps.panelOpen,
                 bgPrimaryColor: !itemProps.panelOpen}"
             @click="missionStart"></button>
+        <div class="processTimeRecord" v-if="itemProps.folderTitle === 'done' && itemProps.item.processTimeUnits < 8">
+            <div class="circleUnit" v-for="unit in itemProps.item.processTimeUnits" :key="unit"></div>
+        </div>
+        <div class="processTimeRecord" v-else-if="itemProps.folderTitle === 'done' && itemProps.item.processTimeUnits >= 8">
+            <div class="circleUnit"></div>
+            <p class="unitCounts">X {{itemProps.item.processTimeUnits}}</p>
+        </div>
     </div>
 </template>
 
@@ -124,7 +131,7 @@ export default class MissionItem extends Vue{
 }
 
     .listItem .uncheck{
-        width: 1.875vw;
+        min-width: 5%;
         height: 1.875vw;
         mask: url('../assets/radio_button_unchecked_black_48dp.svg') no-repeat center;
         mask-size: 100% 100%;
@@ -132,9 +139,9 @@ export default class MissionItem extends Vue{
     }
 
     .listItem .check{
-        width: 1.875vw;
+        min-width: 5%;
         height: 1.875vw;
-        mask: url('../assets/check_circle_black_48dp.svg') no-repeat center;
+        mask: url('../assets/check_circle_outline_black_48dp.svg') no-repeat center;
         mask-size: 100% 100%;
         cursor: pointer;
     }
@@ -142,7 +149,7 @@ export default class MissionItem extends Vue{
 
     .listItem .missionTitle{
         margin-left: 0.3125vw;
-        width: 100%;
+        width: 95%;
         text-align: left;
         font: normal normal bold 1.25vw 'Open Sans', sans-serif;
         letter-spacing: 0px;
@@ -157,4 +164,31 @@ export default class MissionItem extends Vue{
         mask-size: 100% 100%;
         cursor: pointer;
     }
+
+    .listItem .processTimeRecord{
+        height: 1.875vw;
+        width: 15.625vw;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+        .listItem .processTimeRecord .circleUnit{
+            margin-left: 0.625vw;
+            width: 0.9375vw;
+            height: 0.9375vw;
+            background: #FFFFFF 0% 0% no-repeat padding-box;
+            border-radius: 50%;
+
+        }
+
+        .listItem .processTimeRecord .unitCounts{
+            margin-left: 0.625vw;
+            /* width: 100%; */
+            text-align: left;
+            font: normal normal bold 1.25vw 'Open Sans', sans-serif;
+            letter-spacing: 0px;
+            text-transform: uppercase;
+        }
 </style>

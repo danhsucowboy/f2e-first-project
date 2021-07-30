@@ -8,7 +8,7 @@
             <router-view 
                 :missionsToDO="missionsList"
                 @newMission="addNewMission"
-                @newProcessItem="getCurrentId"
+                @newProcessItem="changeCurrentItem"
                 @missionChecked="getFinishedId"
                 @missionUnChecked="getUnCheckMission" 
                 :workRing="workRing"
@@ -27,7 +27,7 @@
         :currentItemId="getCurrentId"
         :missionsToDo="toDoList"
         @newMission="addNewMission"
-        @newProcessItem="getCurrentId"/>
+        @newProcessItem="changeCurrentItem"/>
   </div>
 </template>
 
@@ -101,7 +101,7 @@ import ToDoItem from '@/todoprop';
                     contents: "product prototype",
                     checkStatus: true,
                     timeUnit: 25,
-                    processTimeUnits: 2
+                    processTimeUnits: 10
                 },
                 {
                     id: Math.floor(new Date().valueOf() * Math.random()),
@@ -157,7 +157,7 @@ export default class App extends Vue {
         this.missionsList.push(value)
     }
 
-    checkCurrentItem(value: number){
+    changeCurrentItem(value: number){
         this.currentId = value
     }
 
