@@ -51,7 +51,7 @@ import ToDoItem from '@/todoprop';
                     id: Math.floor(new Date().valueOf() * Math.random()),
                     contents: "the First thing to do today",
                     checkStatus: false,
-                    timeUnit: 1,
+                    timeUnit: 25,
                     processTimeUnits: 0
                 },
                 {

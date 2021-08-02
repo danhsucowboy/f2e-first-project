@@ -126,8 +126,8 @@ import Timer from "@/timer";
             delayTime: 0,
             rightDuration: 0,
             leftDuration: 0,
-            // oneMinute: 59,
-            oneMinute: 8,
+            oneMinute: 59,
+            // oneMinute: 8,
             workingStatus: true
             // counting: this.getMission.timeUnit
         }
@@ -162,12 +162,12 @@ export default class Pomodoro extends Vue {
     minTimer = {
         timerId: 0,
         start: 0,
-        // remaining: 60000
-        remaining: 8000
+        remaining: 60000
+        // remaining: 8000
     }
     processingTime = 0
     workingStatus!: boolean
-    breakUnit = 1
+    breakUnit = 5
 
 
     get orologioProp(){
@@ -315,7 +315,7 @@ export default class Pomodoro extends Vue {
     // }
 
     countDownMinute(inputSetting = 0){
-        let delay:number = inputSetting === 0 ? 8000 : inputSetting
+        let delay:number = inputSetting === 0 ? 60000 : inputSetting
         if(this.processingTime >= 0){
             // console.log(this.workingStatus ? 'Working' : 'Break')
             this.minTimer.start = Date.now()
@@ -367,8 +367,8 @@ export default class Pomodoro extends Vue {
 
     start(inputSetting: number): void{
         this.processingTime = inputSetting
-        // let processSec: number = this.processingTime*60
-        let processSec = 8
+        let processSec: number = this.processingTime*60
+        // let processSec = 8
         this.delayTime = processSec/2
         this.rightDuration = processSec/2
         this.leftDuration = processSec
@@ -423,14 +423,14 @@ export default class Pomodoro extends Vue {
         }
         clearTimeout(this.minTimer.timerId)
         clearTimeout(this.secTimer.timerId)
-        this.minTimer.remaining = 8000
+        this.minTimer.remaining = 60000
         this.secTimer.remaining = 1000
         this.processMode = 0
         this.setWrapperAnim = ''
         this.setLeftCircleAnim = ''
         this.setRightCircleAnim = ''
         this.processingTime = 0
-        this.oneMinute = 8//59
+        this.oneMinute = 59
     }
 
 }
