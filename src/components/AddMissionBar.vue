@@ -1,7 +1,15 @@
 <template>
     <div class="newMissionBar">
-        <input class="missionInput" type="text" placeholder="add a new mission…" v-model="newMission" @keyup.enter="emitNewMission">
-        <button class="addMission" @click="emitNewMission"></button>
+        <input class="missionInput" 
+        :class="{
+            workColor: status,
+            breakColor: !status}"
+        type="text" placeholder="add a new mission…" v-model="newMission" @keyup.enter="emitNewMission">
+        <button class="addMission" 
+        :class="{
+            workBgColor: status,
+            breakBgColor: !status}"
+        @click="emitNewMission"></button>
     </div>
 </template>
 
@@ -14,6 +22,9 @@ import {Options, Vue} from 'vue-class-component';
             newMission:"",
         }
     },
+    props:{
+        status: Boolean
+    },
     emits: {
         add: String
     }
@@ -22,6 +33,7 @@ import {Options, Vue} from 'vue-class-component';
 export default class AddMissionBar extends Vue {
     add!:string
     newMission!:string
+    status!: boolean
     
     emitNewMission(){
         if(this.newMission !== undefined && this.newMission !== ''){
@@ -45,7 +57,7 @@ export default class AddMissionBar extends Vue {
     .contents .newMissionBar .missionInput{
         width: 100%;
         height: 100%;
-        color: #FF4384;
+        /* color: #FF4384; */
         font: normal normal bold 1.25vw 'Open Sans', sans-serif;
         letter-spacing: 0px;
         background: none;
@@ -56,7 +68,7 @@ export default class AddMissionBar extends Vue {
     }
 
     .contents .newMissionBar .missionInput::placeholder{
-        color: #FF4384;
+        /* color: #FF4384; */
         text-align: left;
         font: italic normal bold 1.25vw 'Open Sans', sans-serif;
         letter-spacing: 0px;
@@ -67,7 +79,6 @@ export default class AddMissionBar extends Vue {
         width: 1.875vw;
         height: 1.875vw;
         margin:1.25vw;
-        background-color: #FF4384;
         border:none;
         padding: 0;
         mask: url('../assets/add_black_48dp.svg') no-repeat center;

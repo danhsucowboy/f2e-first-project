@@ -1,43 +1,46 @@
 <template>
   <div :class="{mainPanelOpen: pomodoroShow}" class="pomodoro">
-    <div v-if="pomodoroShow" class="isolated count-ui">
+    <div v-if="pomodoroShow" class="isolated count-ui"
+        :class="{
+            workBorder: workingStatus,
+            breakBorder: !workingStatus}">
         <section class="process-wrapper" :style="cssVars" :data-anim="setWrapperAnim">
-            <section class="left circle" :data-anim="setLeftCircleAnim"></section>
-            <section class="right circle" :data-anim="setRightCircleAnim"></section>
+            <section class="left circle" 
+            :class="{
+                workBgColor: workingStatus,
+                breakBgColor: !workingStatus}"
+            :data-anim="setLeftCircleAnim"></section>
+            <section class="right circle"  
+            :class="{
+                workBgColor: workingStatus,
+                breakBgColor: !workingStatus}"
+            :data-anim="setRightCircleAnim"></section>
         </section>
         <div class="process-circle" 
-            :class="{
-                workBgColor: processMode === 0 || processMode === 2, 
-                processBgColor: processMode === 1}">
+            :class="processBarColor">
             <button class="iconCircle" 
-                :class="{
-                    play: processMode === 0 || processMode === 2, 
-                    pause: processMode === 1}" 
+                :class="iconColor" 
                 @click="processPlay"></button>
             <button class="stop-circle" 
-                :class="{
-                    processBgColor: processMode === 0 || processMode === 2, 
-                    workBgColor: processMode === 1}"
-                @click="processStop"></button>
+                :class="stopIconColor"
+                @click="processStop(true)"></button>
         </div>
     </div>
     <div class="interface">
       <div v-if="!pomodoroShow" class="bgPrimaryColor count-ui">
         <div class="process-circle">
           <button class="side iconCircle" 
-            :class="{
-                play: processMode === 0 || processMode === 2, 
-                pause: processMode === 1}"></button>
+            :class="iconColor"
+            @click="processPlay"></button>
           <div class="bg"></div>
         </div>
       </div>
-      <!-- <div class="timer">25:00</div> -->
-      <Orologio v-if="!pomodoroShow"/>
+      <Orologio v-if="!pomodoroShow" :timerProp="orologioProp"/>
       <div v-if="!pomodoroShow" class="mission">{{missionsToDo.length > 0 ? getMission.contents : 'Clear'}}</div>
     </div>
-    <div :class="{bgOpen: pomodoroShow}" class="bg">
+    <div :class="{bgOpen: pomodoroShow, workPanelBgColor: workingStatus, breakPanelBgColor: !workingStatus}" class="bg">
         <div v-if="pomodoroShow" class="contents">
-            <AddMissionBar @add="addNewMission"/>
+            <AddMissionBar @add="addNewMission" :status="workingStatus"/>
             <div class="currentItem">
                 <div class="showMission" v-if="missionsToDo.length > 0">
                     <button class="missionBtn"  @click="currentItemChecked"></button>
@@ -48,7 +51,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="timer">{{currentItemId > 0 ? showCountingTime : 'Clear'}}</div>
+                <Orologio :timerProp="orologioProp"/>
             </div>
             <div class="listContents" :class="{allMission: displayAll}">
                 <MissionItem v-for="(mission, index) in toDoSource" :key="index" 
@@ -59,6 +62,9 @@
                         currentId:currentItemId}" 
                     @newProcessItem="checkCurrentItem"/>
                 <button class="more" 
+                    :class="{
+                        workColor: workingStatus,
+                        breakColor: !workingStatus}"
                     v-if="missionsToDo.length > 4 && !displayAll"
                     @click="displayAll = true"
                     >more</button>
@@ -112,7 +118,9 @@ import Timer from "@/timer";
             delayTime: 0,
             rightDuration: 0,
             leftDuration: 0,
-            oneMiniute: 59,
+            // oneMinute: 59,
+            oneMinute: 8,
+            workingStatus: true
             // counting: this.getMission.timeUnit
         }
     }
@@ -137,7 +145,7 @@ export default class Pomodoro extends Vue {
     delayTime!: number
     rightDuration!: number
     leftDuration!: number
-    oneMiniute!: number
+    oneMinute!: number
     secTimer = {
         timerId: 0,
         start: 0,
@@ -146,31 +154,23 @@ export default class Pomodoro extends Vue {
     minTimer = {
         timerId: 0,
         start: 0,
-        remaining: 60000
+        // remaining: 60000
+        remaining: 8000
     }
     processingTime = 0
+    workingStatus!: boolean
+    breakUnit = 1
 
 
-    get showCountingTime(): string{
-        if(this.currentItemId > 0){
-            if(this.processMode === 0){
-                if(this.getMission.timeUnit <10)
-                    return `0${this.getMission.timeUnit}:00`
-                return this.getMission.timeUnit + ":00"
-            }
-            else{
-                if(this.processingTime <10 && this.oneMiniute < 10)
-                    return `0${this.processingTime}:0${this.oneMiniute}`
-                else if(this.processingTime <10)
-                    return `0${this.processingTime}:${this.oneMiniute}`
-                else if(this.oneMiniute < 10)
-                    return `${this.processingTime}:0${this.oneMiniute}`
-                else
-                    return `${this.processingTime}:${this.oneMiniute}`
-            }
+    get orologioProp(){
+        return {
+            status: this.workingStatus,
+            currentId: this.currentItemId,
+            mode: this.processMode,
+            timeUnit: this.getMission.timeUnit,
+            processMin: this.processingTime,
+            processSec: this.oneMinute
         }
-        else
-            return 'Clear'
     }
 
     get setWrapperAnim(): string{
@@ -198,10 +198,72 @@ export default class Pomodoro extends Vue {
     }
 
     get cssVars(): any{
-        return {
-            '--delay-time': this.delayTime+'s',
-            '--right-during': this.rightDuration+'s',
-            '--left-during': this.leftDuration+'s'
+        if(this.processMode === 1 || this.processMode === 2)
+            return {
+                '--anime-wrapper-name': 'close-wrapper',
+                '--anime-right-name': 'right-spin',
+                '--anime-left-name': 'left-spin',
+                '--delay-time': this.delayTime+'s',
+                '--right-during': this.rightDuration+'s',
+                '--left-during': this.leftDuration+'s'
+            }
+        else{
+            return {
+                '--anime-wrapper-name': 'none',
+                '--anime-right-name': 'none',
+                '--anime-left-name': 'none'
+                // '--delay-time': this.delayTime+'s',
+                // '--right-during': this.rightDuration+'s',
+                // '--left-during': this.leftDuration+'s'
+            }
+        }
+
+    }
+
+    get processBarColor(): string{
+        switch(this.processMode){
+            case 0:
+            case 2:
+                if(this.workingStatus)
+                    return 'workBgColor workBorder'
+                return 'breakBgColor breakBorder'
+            case 1:
+                if(this.workingStatus)
+                    return 'processBgColor workBorder'
+                return 'processBgColor breakBorder'
+            default:
+                return ''
+        }
+    }
+
+    get iconColor(): string {
+        switch(this.processMode){
+            case 0:
+            case 2:
+                if(this.pomodoroShow)
+                    return 'play'
+                else
+                    return 'workBgColor smallPlay'
+            case 1:
+                if(this.workingStatus)
+                    return 'workBgColor pause'
+                return 'breakBgColor pause'
+            default:
+                return ''
+        }
+    }
+
+    get stopIconColor(): string{
+        switch(this.processMode){
+            case 0:
+            case 2:
+                return 'processBgColor'
+            case 1:
+                if(this.workingStatus)
+                    return 'workBgColor'
+                return 'breakBgColor'
+            default:
+                return ''
         }
     }
 
@@ -228,41 +290,82 @@ export default class Pomodoro extends Vue {
     currentItemChecked(){
         this.$emit('clickId', this.currentItemId)
     }
+    // async modeChange(){
+    //     const breakStart =() => {
+    //         this.start(this.breakUnit)
+    //         this.processMode = 1
+    //         this.setWrapperAnim = 'base wrapper'
+    //         this.setLeftCircleAnim = 'base left'
+    //         this.setRightCircleAnim = 'base right'
+    //     }
 
-    countDownMiniute(inputSetting = 0){
-        let delay:number = inputSetting === 0 ? 60000 : inputSetting
-        if(this.getMission.timeUnit >= 1){
+    //     this.processStop()
+    //     this.workingStatus = !this.workingStatus
+    //     if(!this.workingStatus){
+    //         breakStart()
+    //     }
+    // }
+
+    countDownMinute(inputSetting = 0){
+        let delay:number = inputSetting === 0 ? 8000 : inputSetting
+        if(this.processingTime >= 0){
+            // console.log(this.workingStatus ? 'Working' : 'Break')
             this.minTimer.start = Date.now()
             clearTimeout(this.minTimer.timerId)
             this.minTimer.timerId = setTimeout(() => {
-                this.getMission.timeUnit -= 1
-                this.oneMiniute = 59
-                this.countDownMiniute()
+                this.processingTime-= 1
+                this.oneMinute = 8//59
+                this.countDownMinute()
                 this.countDownSecond()
             }, delay)
+        }
+        else{
+            // console.log('check: ', this.getMission.processTimeUnits)
+            this.processStop()
+            this.getMission.processTimeUnits++
+            this.workingStatus = !this.workingStatus
+            if(!this.workingStatus){
+                setTimeout(()=>{
+                    this.start(this.breakUnit)
+                    this.processMode = 1
+                    this.setWrapperAnim = 'base wrapper'
+                    this.setLeftCircleAnim = 'base left'
+                    this.setRightCircleAnim = 'base right'
+                }, 100)
+            }
+            else{
+                setTimeout(()=>{
+                    this.start(this.getMission.timeUnit)
+                    this.processMode = 1
+                    this.setWrapperAnim = 'base wrapper'
+                    this.setLeftCircleAnim = 'base left'
+                    this.setRightCircleAnim = 'base right'
+                }, 100)
+            }
         }
     }
 
     countDownSecond(inputSetting = 0){
         let delay:number = inputSetting === 0 ? 1000 : inputSetting
-        if(this.oneMiniute >= 1){
+        if(this.oneMinute >= 1){
             this.secTimer.start = Date.now()
             clearTimeout(this.secTimer.timerId)
             this.secTimer.timerId = setTimeout(() => {
-                this.oneMiniute -=1
+                this.oneMinute -=1
                 this.countDownSecond()
             }, delay)
         }
     }
 
-    start(): void{
-        this.processingTime = this.getMission.timeUnit
-        let processSec: number = this.processingTime*60
+    start(inputSetting: number): void{
+        this.processingTime = inputSetting
+        // let processSec: number = this.processingTime*60
+        let processSec = 8
         this.delayTime = processSec/2
         this.rightDuration = processSec/2
         this.leftDuration = processSec
-        this.processingTime -= 1
-        this.countDownMiniute()
+        this.processingTime-= 1
+        this.countDownMinute()
         this.countDownSecond()
     }
 
@@ -274,14 +377,14 @@ export default class Pomodoro extends Vue {
     }
 
     resume():void{
-        this.countDownMiniute(this.minTimer.remaining)
+        this.countDownMinute(this.minTimer.remaining)
         this.countDownSecond(this.secTimer.remaining)
     }
 
     processPlay(): void{
         switch(this.processMode){
             case 0:{
-                this.start()
+                this.start(this.getMission.timeUnit)
                 this.processMode = 1
                 this.setWrapperAnim = 'base wrapper'
                 this.setLeftCircleAnim = 'base left'
@@ -306,16 +409,20 @@ export default class Pomodoro extends Vue {
         
     }
 
-    processStop(): void{
+    processStop(status = false): void{
+        if(status){
+            this.workingStatus = true
+        }
         clearTimeout(this.minTimer.timerId)
         clearTimeout(this.secTimer.timerId)
-        this.minTimer.remaining = 60000
+        this.minTimer.remaining = 8000
         this.secTimer.remaining = 1000
         this.processMode = 0
         this.setWrapperAnim = ''
         this.setLeftCircleAnim = ''
         this.setRightCircleAnim = ''
         this.processingTime = 0
+        this.oneMinute = 8//59
     }
 
 }
@@ -328,7 +435,6 @@ export default class Pomodoro extends Vue {
     left: 43.5vw;
     width: 42.1875vw;
     height: 42.1875vw;
-    border: 4px solid #FF4384;
     border-radius: 50%;
     z-index: 20;
     display: flex;
@@ -342,7 +448,7 @@ export default class Pomodoro extends Vue {
         .isolated .process-wrapper{
             position: absolute;
             top: -.156vw;
-            left: -0.5vw;
+            left: -.6vw;
             width: 42.8125vw;
             height: 42.8125vw;
             border-radius: 50%;
@@ -351,15 +457,24 @@ export default class Pomodoro extends Vue {
             z-index: -1;
         }
 
+        .isolated .process-wrapper .left{
+            left: .1vw;
+        }
+        .isolated .process-wrapper .right{
+            left: 0vw;
+        }
+
         .isolated .process-wrapper .circle{
             position: absolute;
             top: -.156vw;
-            left: 0vw;
             width: 42.8125vw;
             height: 42.8125vw;
-            background-color: #FF4384;
             border-radius: 50%;
             clip: rect(0vw, 21.45vw, 42.8125vw, 0vw);
+        }
+
+        .isolated section[data-anim~=restart]{
+            animation-direction: reverse
         }
 
         .isolated section[data-anim~=pause]{
@@ -368,24 +483,25 @@ export default class Pomodoro extends Vue {
 
         .isolated section[data-anim~=base] {
             -webkit-animation-iteration-count: 1;  /* Only run once */
-            -webkit-animation-fill-mode: forwards; /* Hold the last keyframe */
+            -webkit-animation-fill-mode: forwards; 
+            /* Hold the last keyframe */
             -webkit-animation-timing-function:linear; /* Linear animation */
         }
 
         .process-wrapper[data-anim~=wrapper] {
             -webkit-animation-duration: 0.01s; /* Complete keyframes asap */
             -webkit-animation-delay: var(--delay-time); /* Wait half of the animation */
-            -webkit-animation-name: close-wrapper; /* Keyframes name */
+            -webkit-animation-name: var(--anime-wrapper-name); /* Keyframes name */
         }
 
         .circle[data-anim~=left] {
             -webkit-animation-duration: var(--left-during); /* Full animation time */
-            -webkit-animation-name: left-spin;
+            -webkit-animation-name: var(--anime-left-name);
         }
 
         .circle[data-anim~=right] {
             -webkit-animation-duration: var(--right-during); /* Half animation time */
-            -webkit-animation-name: right-spin;
+            -webkit-animation-name: var(--anime-right-name);
         }
         /* Rotate the right side of the progress bar from 0 to 180 degrees */
         @-webkit-keyframes right-spin {
@@ -415,8 +531,7 @@ export default class Pomodoro extends Vue {
     .isolated .process-circle{
         width: 39.6875vw;
         height: 39.6875vw;
-        /* background-color: #FF4384; */
-        border: 4px solid #FF4384;
+        /* border: 4px solid #FF4384; */
         border-radius: 50%;
         display: flex;
         justify-content: center;
@@ -500,11 +615,6 @@ export default class Pomodoro extends Vue {
         transition: .5s;
     }
 
-    /* .interface .count-ui .process-circle:hover{
-        width: 10vw;
-        height: 10vw;
-    } */
-
 .pomodoro .interface .mission{
     height: 1.5vw;
     text-align: left;
@@ -532,12 +642,20 @@ export default class Pomodoro extends Vue {
     background-color: #fff;
 }
 
+.count-ui .process-circle .smallPlay{
+    mask: url('../assets/play_circle_filled_black_48dp.svg') no-repeat center;
+    padding:0;
+    border:none;
+    mask-size: 115% 115%;
+    /* background-color: #fff; */
+}
+
 .count-ui .process-circle .pause{
     mask: url('../assets/pause_circle_filled_black_48dp.svg') no-repeat center;
     padding:0;
     border:none;
     mask-size: 115% 115%;
-    background-color: #FF4384;
+    /* background-color: #FF4384; */
 }
 
 .count-ui .process-circle .bg{
@@ -554,7 +672,6 @@ export default class Pomodoro extends Vue {
     position: absolute;
     top:4.53vw;
     left:0%;
-    background: #FFEDF7 0% 0% no-repeat padding-box;
     width: 27.34vw;
     height: 27.34vw;
     border-radius: 50%;
@@ -626,7 +743,7 @@ export default class Pomodoro extends Vue {
             text-align: center;
             font: normal normal bold 13.75vw/13.75vw 'Open Sans', sans-serif;
             letter-spacing: 0px;
-            color: #FF4384;
+            /* color: #FF4384; */
             z-index: -1;
         }
 
@@ -651,17 +768,14 @@ export default class Pomodoro extends Vue {
             align-self: flex-end;
             width: 3.4375vw;
             height: 1.5vw;
-            /* text-align: right; */
             font: normal normal bold 1.25vw/1.5vw 'Open Sans', sans-serif;
             letter-spacing: 0px;
-            color: #FF4384;
             text-transform: uppercase;
             cursor: pointer;
         }
 
 .pomodoro .bgOpen{
     top:0%;
-    background: #FFEDF7 0% 0% no-repeat padding-box;
     width: 100%;
     height: 100%;
     border-radius: 0%;

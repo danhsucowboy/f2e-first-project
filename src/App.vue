@@ -51,7 +51,7 @@ import ToDoItem from '@/todoprop';
                     id: Math.floor(new Date().valueOf() * Math.random()),
                     contents: "the First thing to do today",
                     checkStatus: false,
-                    timeUnit: 2,
+                    timeUnit: 1,
                     processTimeUnits: 0
                 },
                 {
@@ -228,6 +228,14 @@ button{
 }
 
 .breakColor{
+    color: #00A7FF;
+}
+
+.workColor::placeholder{
+    color: #FF4384;
+}
+
+.breakColor::placeholder{
     color: #00A7FF;
 }
 
