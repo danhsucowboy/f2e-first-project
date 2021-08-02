@@ -322,7 +322,7 @@ export default class Pomodoro extends Vue {
             clearTimeout(this.minTimer.timerId)
             this.minTimer.timerId = setTimeout(() => {
                 this.processingTime-= 1
-                this.oneMinute = 8//59
+                this.oneMinute = 59
                 this.countDownMinute()
                 this.countDownSecond()
             }, delay)
@@ -456,7 +456,9 @@ export default class Pomodoro extends Vue {
         .isolated .process-wrapper{
             position: absolute;
             top: -.156vw;
-            left: -.6vw;
+            left: -.3vw;
+            /* top: 0vw;
+            left: 0vw; */
             width: 42.8125vw;
             height: 42.8125vw;
             border-radius: 50%;
@@ -466,19 +468,19 @@ export default class Pomodoro extends Vue {
         }
 
         .isolated .process-wrapper .left{
-            left: .1vw;
+            left: .13vw;
         }
         .isolated .process-wrapper .right{
-            left: 0vw;
+            left: .13vw;
         }
 
         .isolated .process-wrapper .circle{
             position: absolute;
-            top: -.156vw;
-            width: 42.8125vw;
-            height: 42.8125vw;
+            top: 0vw;
+            width: 42.4vw;
+            height: 42.4vw;
             border-radius: 50%;
-            clip: rect(0vw, 21.45vw, 42.8125vw, 0vw);
+            clip: rect(0vw, calc(42.4vw/2), 42.4vw, 0vw);
         }
 
         .isolated section[data-anim~=restart]{
