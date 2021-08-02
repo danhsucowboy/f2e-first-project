@@ -47,7 +47,15 @@
                     <div class="itemProcess">
                         <div class="missionTitle">{{getMission.contents}}</div>
                         <div class="processBoard">
-                            <div class="smallCircle"></div>
+                            <div class="doneCircle" v-for="circle in getMission.processTimeUnits" :key="circle"></div>
+                            <div class="smallCircle" v-if="workingStatus">
+                                <section class="process-wrapper" :style="cssVars" :data-anim="setWrapperAnim">
+                                    <section class="workBgColor left circle" 
+                                    :data-anim="setLeftCircleAnim"></section>
+                                    <section class="workBgColor right circle"
+                                    :data-anim="setRightCircleAnim"></section>
+                                </section>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -322,9 +330,9 @@ export default class Pomodoro extends Vue {
         else{
             // console.log('check: ', this.getMission.processTimeUnits)
             this.processStop()
-            this.getMission.processTimeUnits++
             this.workingStatus = !this.workingStatus
             if(!this.workingStatus){
+                this.getMission.processTimeUnits++
                 setTimeout(()=>{
                     this.start(this.breakUnit)
                     this.processMode = 1
@@ -504,29 +512,29 @@ export default class Pomodoro extends Vue {
             -webkit-animation-name: var(--anime-right-name);
         }
         /* Rotate the right side of the progress bar from 0 to 180 degrees */
-        @-webkit-keyframes right-spin {
-            from {
-                -webkit-transform: rotate(0deg);
-            }
-            to {
-                -webkit-transform: rotate(180deg);
-            }
-        }
-        /* Rotate the left side of the progress bar from 0 to 360 degrees */
-        @-webkit-keyframes left-spin {
-            from {
-                -webkit-transform: rotate(0deg);
-            }
-            to {
-                -webkit-transform: rotate(360deg);
-            }
-        }
-        /* Set the wrapper clip to auto, effectively removing the clip */
-        @-webkit-keyframes close-wrapper {
-            to {
-                clip: rect(auto, auto, auto, auto);
-            }
-        }
+@-webkit-keyframes right-spin {
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(180deg);
+    }
+}
+/* Rotate the left side of the progress bar from 0 to 360 degrees */
+@-webkit-keyframes left-spin {
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+    }
+}
+/* Set the wrapper clip to auto, effectively removing the clip */
+@-webkit-keyframes close-wrapper {
+    to {
+        clip: rect(auto, auto, auto, auto);
+    }
+}
 
     .isolated .process-circle{
         width: 39.6875vw;
@@ -730,12 +738,66 @@ export default class Pomodoro extends Vue {
                     flex-wrap: wrap;
                 }
 
+                    .itemProcess .processBoard .doneCircle{
+                        width: 0.9375vw;
+                        height: 0.9375vw;
+                        background-color: #003164;
+                        border: 1px solid #003164;
+                        border-radius: 50%;
+                        margin-right: 0.625vw;
+                    }
+
                     .itemProcess .processBoard .smallCircle{
                         width: 0.9375vw;
                         height: 0.9375vw;
                         border: 1px solid #FF4384;
                         border-radius: 50%;
+                        position: relative;
                     }
+
+                         .smallCircle .process-wrapper{
+                            position: absolute;
+                            top: 0vw;
+                            left: 0vw;
+                            width: 0.9375vw;
+                            height: 0.9375vw;
+                            border-radius: 50%;
+                            border-color: none;
+                            clip: rect(0vw, 0.9375vw, 0.9375vw, calc(0.9375vw/2));
+                            z-index: -1;
+                        }
+
+                        .smallCircle .process-wrapper .left{
+                            left: 0vw;
+                        }
+                        .smallCircle .process-wrapper .right{
+                            left: 0vw;
+                        }
+
+                        .smallCircle .process-wrapper .circle{
+                            position: absolute;
+                            top: 0vw;
+                            width: 0.9375vw;
+                            height: 0.9375vw;
+                            border-radius: 50%;
+                            /* border: 1px solid #FF4384; */
+                            clip: rect(0vw, 0.469vw, 0.9375vw, 0vw);
+                        }
+
+                        .smallCircle section[data-anim~=restart]{
+                            animation-direction: reverse
+                        }
+
+                        .smallCircle section[data-anim~=pause]{
+                            animation-play-state: paused;
+                        }
+
+                        .smallCircle section[data-anim~=base] {
+                            -webkit-animation-iteration-count: 1;  /* Only run once */
+                            -webkit-animation-fill-mode: forwards; 
+                            /* Hold the last keyframe */
+                            -webkit-animation-timing-function:linear; /* Linear animation */
+                        }
 
         .contents .currentItem .timer{
             width: 100%;
