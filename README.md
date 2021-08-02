@@ -4,6 +4,9 @@ A practice project from first level of Taiwan's [f2e challenge](https://challeng
 
 It is a pomodoro web application, design by UI designer "吳俊儀 Junior", layout design shows on [here](https://xd.adobe.com/spec/4f6eb081-4411-4b48-69ae-34b92df3f3e4-395f/specs/) by Adobe XD 
 
+## Demo Site
+[See Demo!](https://danhsucowboy.github.io/f2e-first-project/)
+
 ## Project setup
 ```
 npm install
