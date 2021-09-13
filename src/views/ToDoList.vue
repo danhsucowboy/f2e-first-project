@@ -1,5 +1,5 @@
 <template>
-    <AddMissionBar @add="addNewMission"/>
+    <AddMissionBar @add="addNewMission" :status="true"/>
     <ListFolder title="to-do" 
     :foldedSetting="true" 
     :panelStatus="true" 

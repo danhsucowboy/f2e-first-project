@@ -49,7 +49,7 @@ import ToDoItem from '@/todoprop';
             missionsList: [
                 {
                     id: Math.floor(new Date().valueOf() * Math.random()),
-                    contents: "the First thing to do today",
+                    contents: "The one minute demo",
                     checkStatus: false,
                     timeUnit: 1,
                     processTimeUnits: 0
